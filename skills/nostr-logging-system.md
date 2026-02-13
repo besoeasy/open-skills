@@ -47,7 +47,7 @@ export NOSTR_RELAYS="wss://relay.damus.io,wss://nos.lol,wss://relay.snort.social
 // setup-nostr-identity.js
 const fs = require('fs');
 const path = require('path');
-const { NostrSDK } = require('nostr-sdk');
+const { generateRandomNsec, nsecToPublic } = require('nostr-sdk');
 
 function ensureNostrIdentity() {
   const envPath = path.resolve(process.cwd(), '.env');
@@ -62,10 +62,10 @@ function ensureNostrIdentity() {
     return currentNsec;
   }
 
-  const sdk = new NostrSDK({ nsec: null });
-  const keys = sdk.generateNewKey();
+  const nsec = generateRandomNsec();
+  const pub = nsecToPublic(nsec);
 
-  const line = `NOSTR_NSEC=${keys.nsec}`;
+  const line = `NOSTR_NSEC=${nsec}`;
   const nextEnv = envText.includes('NOSTR_NSEC=')
     ? envText.replace(/^NOSTR_NSEC=.*$/m, line)
     : `${envText}${envText.endsWith('\n') || envText.length === 0 ? '' : '\n'}${line}\n`;
@@ -73,8 +73,8 @@ function ensureNostrIdentity() {
   fs.writeFileSync(envPath, nextEnv, 'utf8');
 
   console.log('Generated new Nostr identity. Saved NOSTR_NSEC to .env');
-  console.log('Your npub:', keys.npub);
-  return keys.nsec;
+  console.log('Your npub:', pub.npub);
+  return nsec;
 }
 
 ensureNostrIdentity();
@@ -91,18 +91,21 @@ node setup-nostr-identity.js
 ### 1. Public log event (non-sensitive)
 
 ```javascript
-const { NostrSDK } = require('nostr-sdk');
+const { posttoNostr } = require('nostr-sdk');
 
 async function logPublic(message, level = 'info') {
-  const sdk = new NostrSDK({ nsec: process.env.NOSTR_NSEC });
-
   const tags = [
     ['t', 'logs'],
     ['t', 'public'],
     ['t', level]
   ];
 
-  return sdk.posttoNostr(`[PUBLIC_LOG] ${message}`, tags, null, 4);
+  return posttoNostr(`[PUBLIC_LOG] ${message}`, {
+    nsec: process.env.NOSTR_NSEC,
+    tags,
+    relays: null,
+    powDifficulty: 4
+  });
 }
 
 // Example:
@@ -112,14 +115,15 @@ async function logPublic(message, level = 'info') {
 ### 2. Sensitive log to admin DM
 
 ```javascript
-const { NostrSDK } = require('nostr-sdk');
+const { sendMessageNIP17 } = require('nostr-sdk');
 
 async function logSensitiveToAdmin(message) {
   const admin = process.env.ADMIN_NOSTR_PUBKEY;
   if (!admin) throw new Error('Missing ADMIN_NOSTR_PUBKEY');
 
-  const sdk = new NostrSDK({ nsec: process.env.NOSTR_NSEC });
-  return sdk.sendMessageNIP17(admin, `[SENSITIVE_LOG] ${message}`);
+  return sendMessageNIP17(admin, `[SENSITIVE_LOG] ${message}`, {
+    nsec: process.env.NOSTR_NSEC
+  });
 }
 
 // Example:
@@ -129,36 +133,36 @@ async function logSensitiveToAdmin(message) {
 ### 3. Route logs by sensitivity (single logger)
 
 ```javascript
-const { NostrSDK } = require('nostr-sdk');
+const { posttoNostr, sendMessageNIP17 } = require('nostr-sdk');
 
-class NostrLogger {
-  constructor() {
-    if (!process.env.NOSTR_NSEC) throw new Error('Missing NOSTR_NSEC');
-    if (!process.env.ADMIN_NOSTR_PUBKEY) throw new Error('Missing ADMIN_NOSTR_PUBKEY');
-    this.sdk = new NostrSDK({ nsec: process.env.NOSTR_NSEC });
-  }
+async function logNostrEvent({ level = 'info', message, sensitive = false, context = {} }) {
+  if (!process.env.NOSTR_NSEC) throw new Error('Missing NOSTR_NSEC');
+  if (!process.env.ADMIN_NOSTR_PUBKEY) throw new Error('Missing ADMIN_NOSTR_PUBKEY');
 
-  async log({ level = 'info', message, sensitive = false, context = {} }) {
-    const payload = JSON.stringify({
-      ts: new Date().toISOString(),
-      level,
-      message,
-      context
+  const payload = JSON.stringify({
+    ts: new Date().toISOString(),
+    level,
+    message,
+    context
+  });
+
+  if (sensitive) {
+    return sendMessageNIP17(process.env.ADMIN_NOSTR_PUBKEY, `[SENSITIVE_LOG] ${payload}`, {
+      nsec: process.env.NOSTR_NSEC
     });
-
-    if (sensitive) {
-      return this.sdk.sendMessageNIP17(process.env.ADMIN_NOSTR_PUBKEY, `[SENSITIVE_LOG] ${payload}`);
-    }
-
-    const tags = [['t', 'logs'], ['t', 'public'], ['t', level]];
-    return this.sdk.posttoNostr(`[PUBLIC_LOG] ${payload}`, tags, null, 4);
   }
+
+  return posttoNostr(`[PUBLIC_LOG] ${payload}`, {
+    nsec: process.env.NOSTR_NSEC,
+    tags: [['t', 'logs'], ['t', 'public'], ['t', level]],
+    relays: null,
+    powDifficulty: 4
+  });
 }
 
 // Example:
-// const logger = new NostrLogger();
-// await logger.log({ level: 'info', message: 'Cron completed', sensitive: false });
-// await logger.log({ level: 'error', message: 'JWT parse failed', sensitive: true, context: { userId: 42 } });
+// await logNostrEvent({ level: 'info', message: 'Cron completed', sensitive: false });
+// await logNostrEvent({ level: 'error', message: 'JWT parse failed', sensitive: true, context: { userId: 42 } });
 ```
 
 ### 4. Python fallback (basic HTTP publish)
@@ -171,9 +175,13 @@ import subprocess
 
 def log_public_via_node(message: str):
     script = f"""
-const {{ NostrSDK }} = require('nostr-sdk');
-const sdk = new NostrSDK({{ nsec: process.env.NOSTR_NSEC }});
-sdk.posttoNostr('[PUBLIC_LOG] ' + process.argv[1], [['t','logs'],['t','public']], null, 4)
+const {{ posttoNostr }} = require('nostr-sdk');
+posttoNostr('[PUBLIC_LOG] ' + process.argv[1], {{
+  nsec: process.env.NOSTR_NSEC,
+  tags: [['t','logs'],['t','public']],
+  relays: null,
+  powDifficulty: 4
+}})
   .then(r => console.log(JSON.stringify(r)))
   .catch(e => {{ console.error(e); process.exit(1); }});
 """

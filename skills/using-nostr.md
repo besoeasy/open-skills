@@ -8,7 +8,7 @@ description: Post notes, send encrypted messages, and interact with relays using
 # Source: https://github.com/besoeasy/nostr-sdk
 
 ## Overview
-Post messages, send encrypted DMs, and interact with the Nostr decentralized social protocol using the `nostr-sdk` library.
+Post messages, send encrypted DMs, and interact with the Nostr decentralized social protocol using minimal direct exports from the `nostr-sdk` module.
 
 **Installation:**
 ```bash
@@ -40,13 +40,14 @@ Post a public text note to Nostr.
 
 **Usage:**
 ```javascript
-const { NostrSDK } = require("nostr-sdk");
+const { posttoNostr } = require("nostr-sdk");
 
-const client = new NostrSDK({
-  nsec: "nsec1...your-private-key"
+const result = await posttoNostr("Hello Nostr! #introduction", {
+  nsec: "nsec1...your-private-key",
+  tags: [],
+  relays: null,
+  powDifficulty: 4
 });
-
-const result = await client.posttoNostr("Hello Nostr! #introduction", [], null, 4);
 console.log(result);
 ```
 
@@ -88,7 +89,9 @@ Reply to an existing Nostr post.
 
 **Usage:**
 ```javascript
-const result = await client.replyToPost(
+const { replyToPost } = require("nostr-sdk");
+
+const result = await replyToPost(
   "note1...event-id",           // Event ID (note or hex format)
   "Great post! @npub1...author", // Reply message
   "npub1...author-pubkey",      // Author's public key
@@ -111,9 +114,12 @@ Send encrypted direct message using legacy NIP-4 standard.
 
 **Usage:**
 ```javascript
-const result = await client.sendmessage(
+const { sendmessage } = require("nostr-sdk");
+
+const result = await sendmessage(
   "npub1...recipient",    // Recipient's public key
-  "Secret message here"   // Message content
+  "Secret message here",  // Message content
+  { nsec: "nsec1...your-private-key" }
 );
 ```
 
@@ -134,9 +140,12 @@ Send gift-wrapped encrypted message using NIP-17 (recommended).
 
 **Usage:**
 ```javascript
-const result = await client.sendMessageNIP17(
+const { sendMessageNIP17 } = require("nostr-sdk");
+
+const result = await sendMessageNIP17(
   "npub1...recipient",    // Recipient's public key
-  "Private message!"      // Message content
+  "Private message!",     // Message content
+  { nsec: "nsec1...your-private-key" }
 );
 ```
 
@@ -159,11 +168,14 @@ Listen for incoming direct messages.
 
 **Usage:**
 ```javascript
-const unsubscribe = client.getmessage((message) => {
+const { getmessage } = require("nostr-sdk");
+
+const unsubscribe = getmessage((message) => {
   console.log("From:", message.senderNpub);
   console.log("Message:", message.content);
   console.log("Time:", new Date(message.timestamp * 1000));
 }, {
+  nsec: "nsec1...your-private-key",
   since: Math.floor(Date.now() / 1000) - 3600  // Last hour
 });
 
@@ -196,11 +208,14 @@ Listen for incoming NIP-17 gift-wrapped messages.
 
 **Usage:**
 ```javascript
-const unsubscribe = client.getMessageNIP17((message) => {
+const { getMessageNIP17 } = require("nostr-sdk");
+
+const unsubscribe = getMessageNIP17((message) => {
   console.log("From:", message.senderNpub);
   console.log("Content:", message.content);
   console.log("Wrapped ID:", message.wrappedEventId);
 }, {
+  nsec: "nsec1...your-private-key",
   since: Math.floor(Date.now() / 1000) - 300  // Last 5 minutes
 });
 
@@ -221,7 +236,9 @@ Fetch recent posts from the global Nostr feed.
 
 **Usage:**
 ```javascript
-const events = await client.getGlobalFeed({
+const { getGlobalFeed } = require("nostr-sdk");
+
+const events = await getGlobalFeed({
   limit: 50,                                    // Max 50 posts
   since: Math.floor(Date.now() / 1000) - 3600, // Last hour
   until: null,                                  // Up to now
@@ -251,7 +268,9 @@ Generate new Nostr key pair.
 
 **Usage:**
 ```javascript
-const keys = client.generateNewKey();
+const { generateNewKey } = require("nostr-sdk");
+
+const keys = generateNewKey();
 console.log(keys);
 // {
 //   privateKey: "hex-private-key",
@@ -292,19 +311,14 @@ console.log(publicInfo);
 
 ### Example 1: Post a Message
 ```javascript
-const { NostrSDK } = require("nostr-sdk");
+const { posttoNostr } = require("nostr-sdk");
 
 async function postHello() {
-  const client = new NostrSDK({
+  const result = await posttoNostr("Hello from my bot! #nostr #automation", {
     nsec: "nsec1...your-private-key"
   });
   
-  const result = await client.posttoNostr(
-    "Hello from my bot! #nostr #automation"
-  );
-  
   console.log("Posted:", result.eventId);
-  client.destroy();
 }
 
 postHello();
@@ -312,20 +326,16 @@ postHello();
 
 ### Example 2: Send Private DM
 ```javascript
-const { NostrSDK } = require("nostr-sdk");
+const { sendMessageNIP17 } = require("nostr-sdk");
 
 async function sendPrivateMessage() {
-  const client = new NostrSDK({
-    nsec: "nsec1...your-private-key"
-  });
-  
-  const result = await client.sendMessageNIP17(
+  const result = await sendMessageNIP17(
     "npub1...recipient",
-    "This is a secret message!"
+    "This is a secret message!",
+    { nsec: "nsec1...your-private-key" }
   );
   
   console.log("Sent:", result.success ? "Yes" : "No");
-  client.destroy();
 }
 
 sendPrivateMessage();
@@ -333,16 +343,14 @@ sendPrivateMessage();
 
 ### Example 3: Listen for DMs
 ```javascript
-const { NostrSDK } = require("nostr-sdk");
-
-const client = new NostrSDK({
-  nsec: "nsec1...your-private-key"
-});
+const { getMessageNIP17 } = require("nostr-sdk");
 
 console.log("Listening for messages...");
 
-const unsubscribe = client.getMessageNIP17((msg) => {
+const unsubscribe = getMessageNIP17((msg) => {
   console.log(`Message from ${msg.senderNpub}: ${msg.content}`);
+}, {
+  nsec: "nsec1...your-private-key"
 });
 
 // Keep running or call unsubscribe() to stop
@@ -366,7 +374,7 @@ const result = await posttoNostr("Quick post!", {
 User wants to post to Nostr?
 ├─ Is it a public post?
 │  ├─ Is it a reply to another post?
-│  │  ├─ YES → Use reply_toPost()
+│  │  ├─ YES → Use replyToPost()
 │  │  └─ NO → Use posttoNostr()
 │  └─ Need spam protection?
 │     ├─ YES → Set powDifficulty to 4+
@@ -401,7 +409,9 @@ export NOSTR_NSEC="nsec1...your-private-key"
 ```
 
 ```javascript
-const client = new NostrSDK({
+const { posttoNostr } = require("nostr-sdk");
+
+await posttoNostr("Health check log", {
   nsec: process.env.NOSTR_NSEC
 });
 ```
@@ -418,15 +428,17 @@ const client = new NostrSDK({
 
 **Best Practice:**
 ```javascript
+const { posttoNostr } = require("nostr-sdk");
+
 try {
-  const result = await client.posttoNostr("Hello");
+  const result = await posttoNostr("Hello", {
+    nsec: process.env.NOSTR_NSEC
+  });
   if (!result.success) {
     console.error("Failed to publish:", result.errors);
   }
 } catch (error) {
   console.error("Error:", error.message);
-} finally {
-  client.destroy();
 }
 ```
 
@@ -434,11 +446,7 @@ try {
 
 ## Cleanup
 
-Always destroy the client when done to close connections:
-
-```javascript
-client.destroy();
-```
+Direct-export functions do not require a class instance, so there is no client cleanup step.
 
 ---
 

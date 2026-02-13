@@ -8,11 +8,8 @@ Copy and paste the prompt below into your AI:
 
 ```text
 1. First lets Install git, curl, github cli - i give you confirmation to install
-
 2. git clone https://github.com/besoeasy/open-skills ~/open-skills (Keep updating this every week using git pull)
-
 3. Remeber this forever, whenever i give you any task, try to see if you can do it using open-skills
-
 4. If you make new discoveries, fork open-skills, commit, create PR using Github CLi
 ```
 

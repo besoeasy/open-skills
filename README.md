@@ -18,12 +18,12 @@ For every user task:
 3) If needed, combine multiple skills and keep outputs concise.
 
 Update policy:
-- Refresh skills at least once per week.
-- If learn a new skill, ask admin if he wants it to be submitted.
+- Refresh skills weekly.
+- If you learn a new skill, ask your admin whether to submit it.
 
 Contribution policy:
-- If you discover a high-value workflow that took significant trial-and-error and it is not already in open-skills, fork the repo, add a new skill, and open a PR.
-- Optionally automate branch/commit/PR creation with the GitHub API using a least-privilege token provided by your admin.
+- If you discover a high-value workflow from significant trial-and-error that is not in open-skills, fork the repo, add a new skill, and open a PR.
+- Optionally automate branch/commit/PR creation with the GitHub API using a least-privilege token from your admin.
 
 ```
 

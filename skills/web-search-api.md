@@ -1,8 +1,8 @@
-# SearXNG Privacy Search Skill
+# Web Search API (Free) — SearXNG
 
-Use SearXNG — a free, privacy-respecting metasearch engine with unlimited API access. Discover active instances from https://searx.space/ and perform searches without tracking, rate limits, or API costs.
+Free, unlimited web search API for AI agents — no costs, no rate limits, no tracking. Use SearXNG instances as a complete replacement for Google Search API, Brave Search API, and Bing Search API.
 
-## Why SearXNG for AI Agents
+## Why This Replaces Paid Search APIs
 
 **💰 Cost savings:**
 - ✅ **100% free** — no API keys, no rate limits, no billing

@@ -164,7 +164,7 @@ AI agents are incredibly powerful, but they waste enormous amounts of compute re
 - [PDF Manipulation](./skills/pdf-manipulation.md) — Merge, split, extract text/images, redact, compress, encrypt, and watermark PDFs using pdftk, qpdf, poppler-utils, and ghostscript.
 - [Telegram (Telegraf)](./skills/using-telegram-bot.md) — Node.js examples for building Telegram bots with `telegraf` (polling, webhooks, media, inline buttons).
 - [YouTube Download](./skills/using-youtube-download.md) — Use `yt-dlp` + `ffmpeg` to download highest-quality video and extract MP3 audio.
-- [SearXNG Privacy Search](./skills/using-searxng.md) — Free, unlimited web search API via SearXNG instances. No API keys, no rate limits, no costs. Discover active instances from searx.space and save $100s vs Google Search API.
+- [Web Search API (Free)](./skills/web-search-api.md) — Free, unlimited web search via SearXNG instances. No API keys, no rate limits, no costs. Replaces Google/Brave/Bing Search APIs and saves $360-$8,000/year.
 - [Web Scraping (Chrome + DuckDuckGo)](./skills/using-web-scraping.md) — Headless Chrome (Playwright/Puppeteer) + DuckDuckGo search; respects `robots.txt`, rate-limits, and returns structured JSON.
 
 ## Contributing

@@ -8,18 +8,17 @@ description: Generate a clean white Tailwind CDN report page from user content, 
 Create a single `index.html` report page from user-provided content, style it with Tailwind CDN (white background, subtle animations), then publish it to Originless for instant hosting.
 
 ## When to use
+
 - User asks for a quick hosted report or landing page from text/data
 - User wants no-build static HTML output (`index.html` only)
 - User wants instant public hosting via Originless/IPFS
 - User optionally asks for a password prompt before content is shown
 
 ## Required tools / APIs
+
 - Originless endpoint (pick one):
   - `http://localhost:3232/upload` (self-hosted)
   - `https://filedrop.besoeasy.com/upload` (public instance)
-- Optional fallback servers:
-  - `https://blossom.primal.net/upload`
-  - `https://24242.io/upload`
 
 No build tooling is required for the basic flow.
 
@@ -30,43 +29,53 @@ No build tooling is required for the basic flow.
 Generate an `index.html` with Tailwind CDN and subtle animations.
 
 **Design constraints:**
+
 - White-first layout (`bg-white`, dark text)
 - Slight motion only (fade/slide on cards, soft hover)
 - Responsive, readable typography
 - No external framework build step
 
 **Starter template (`index.html`):**
+
 ```html
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Report</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .fade-up { animation: fadeUp .45s ease-out both; }
-  </style>
-</head>
-<body class="bg-white text-slate-900 antialiased">
-  <main class="max-w-4xl mx-auto px-6 py-10">
-    <header class="mb-8 fade-up">
-      <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight">User Report</h1>
-      <p class="mt-2 text-slate-600">Generated static report page</p>
-    </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-up {
+        animation: fadeUp 0.45s ease-out both;
+      }
+    </style>
+  </head>
+  <body class="bg-white text-slate-900 antialiased">
+    <main class="max-w-4xl mx-auto px-6 py-10">
+      <header class="mb-8 fade-up">
+        <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight">User Report</h1>
+        <p class="mt-2 text-slate-600">Generated static report page</p>
+      </header>
 
-    <section class="grid gap-4">
-      <article class="fade-up rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-        <h2 class="text-lg font-medium">Summary</h2>
-        <p class="mt-2 text-slate-700 leading-relaxed">Replace with user-requested content.</p>
-      </article>
-    </section>
-  </main>
-</body>
+      <section class="grid gap-4">
+        <article class="fade-up rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <h2 class="text-lg font-medium">Summary</h2>
+          <p class="mt-2 text-slate-700 leading-relaxed">Replace with user-requested content.</p>
+        </article>
+      </section>
+    </main>
+  </body>
 </html>
 ```
 
@@ -75,6 +84,7 @@ Generate an `index.html` with Tailwind CDN and subtle animations.
 Upload generated `index.html` and return hosted URL.
 
 **Bash:**
+
 ```bash
 # Self-hosted Originless
 curl -fsS -X POST -F "file=@index.html" http://localhost:3232/upload
@@ -84,15 +94,16 @@ curl -fsS -X POST -F "file=@index.html" https://filedrop.besoeasy.com/upload
 ```
 
 **Node.js:**
+
 ```javascript
-import fs from 'node:fs';
+import fs from "node:fs";
 
-const file = new Blob([fs.readFileSync('index.html')], { type: 'text/html' });
+const file = new Blob([fs.readFileSync("index.html")], { type: "text/html" });
 const form = new FormData();
-form.append('file', file, 'index.html');
+form.append("file", file, "index.html");
 
-const endpoint = 'https://filedrop.besoeasy.com/upload';
-const res = await fetch(endpoint, { method: 'POST', body: form });
+const endpoint = "https://filedrop.besoeasy.com/upload";
+const res = await fetch(endpoint, { method: "POST", body: form });
 if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
 
 const out = await res.json();
@@ -100,6 +111,7 @@ console.log(out.url || out.cid || out);
 ```
 
 **Python:**
+
 ```python
 import requests
 
@@ -118,6 +130,7 @@ If user requests a password, keep content encrypted in the HTML and only render 
 > Important: this is client-side access gating, not strong secret storage. Anyone with the file can still inspect code/assets.
 
 **Client-side unlock block (drop into `index.html`):**
+
 ```html
 <div id="lock" class="max-w-md mx-auto mt-16 p-6 border rounded-2xl">
   <h2 class="text-xl font-semibold">Protected Report</h2>
@@ -130,89 +143,87 @@ If user requests a password, keep content encrypted in the HTML and only render 
 <div id="app" class="hidden"></div>
 
 <script id="enc" type="application/json">
-{
-  "salt": "BASE64_SALT",
-  "iv": "BASE64_IV",
-  "ciphertext": "BASE64_CIPHERTEXT"
-}
+  {
+    "salt": "BASE64_SALT",
+    "iv": "BASE64_IV",
+    "ciphertext": "BASE64_CIPHERTEXT"
+  }
 </script>
 
 <script>
-  const enc = JSON.parse(document.getElementById('enc').textContent);
+  const enc = JSON.parse(document.getElementById("enc").textContent);
 
-  const b64ToBytes = (b64) => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const b64ToBytes = (b64) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 
   async function deriveKey(password, saltBytes) {
-    const keyMaterial = await crypto.subtle.importKey(
-      'raw',
-      new TextEncoder().encode(password),
-      'PBKDF2',
-      false,
-      ['deriveKey']
-    );
+    const keyMaterial = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
     return crypto.subtle.deriveKey(
-      { name: 'PBKDF2', salt: saltBytes, iterations: 100000, hash: 'SHA-256' },
+      { name: "PBKDF2", salt: saltBytes, iterations: 100000, hash: "SHA-256" },
       keyMaterial,
-      { name: 'AES-GCM', length: 256 },
+      { name: "AES-GCM", length: 256 },
       false,
-      ['decrypt']
+      ["decrypt"],
     );
   }
 
   async function decryptHtml(password) {
     const key = await deriveKey(password, b64ToBytes(enc.salt));
-    const plain = await crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv: b64ToBytes(enc.iv) },
-      key,
-      b64ToBytes(enc.ciphertext)
-    );
+    const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64ToBytes(enc.iv) }, key, b64ToBytes(enc.ciphertext));
     return new TextDecoder().decode(plain);
   }
 
-  document.getElementById('unlock').addEventListener('click', async () => {
-    const pw = document.getElementById('pw').value;
-    const err = document.getElementById('err');
+  document.getElementById("unlock").addEventListener("click", async () => {
+    const pw = document.getElementById("pw").value;
+    const err = document.getElementById("err");
     try {
       const html = await decryptHtml(pw);
-      document.getElementById('app').innerHTML = html;
-      document.getElementById('app').classList.remove('hidden');
-      document.getElementById('lock').classList.add('hidden');
-      err.classList.add('hidden');
+      document.getElementById("app").innerHTML = html;
+      document.getElementById("app").classList.remove("hidden");
+      document.getElementById("lock").classList.add("hidden");
+      err.classList.add("hidden");
     } catch {
-      err.classList.remove('hidden');
+      err.classList.remove("hidden");
     }
   });
 </script>
 ```
 
 **Generate encrypted payload (Node.js helper):**
+
 ```javascript
-import { randomBytes, pbkdf2Sync, createCipheriv } from 'node:crypto';
+import { randomBytes, pbkdf2Sync, createCipheriv } from "node:crypto";
 
 const password = process.argv[2];
-const reportHtml = '<section><h1>Secret report</h1><p>Private content</p></section>';
+const reportHtml = "<section><h1>Secret report</h1><p>Private content</p></section>";
 
-if (!password) throw new Error('Usage: node encrypt.js <password>');
+if (!password) throw new Error("Usage: node encrypt.js <password>");
 
 const salt = randomBytes(16);
 const iv = randomBytes(12);
-const key = pbkdf2Sync(password, salt, 100000, 32, 'sha256');
+const key = pbkdf2Sync(password, salt, 100000, 32, "sha256");
 
-const cipher = createCipheriv('aes-256-gcm', key, iv);
-const ciphertext = Buffer.concat([cipher.update(reportHtml, 'utf8'), cipher.final()]);
+const cipher = createCipheriv("aes-256-gcm", key, iv);
+const ciphertext = Buffer.concat([cipher.update(reportHtml, "utf8"), cipher.final()]);
 const tag = cipher.getAuthTag();
 
 const packed = Buffer.concat([ciphertext, tag]);
-console.log(JSON.stringify({
-  salt: salt.toString('base64'),
-  iv: iv.toString('base64'),
-  ciphertext: packed.toString('base64')
-}, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      salt: salt.toString("base64"),
+      iv: iv.toString("base64"),
+      ciphertext: packed.toString("base64"),
+    },
+    null,
+    2,
+  ),
+);
 ```
 
 Note: Web Crypto `AES-GCM` expects ciphertext with auth tag appended. The helper above packs `ciphertext || tag` to match browser decryption.
 
 ## Agent prompt
+
 ```text
 You are generating a single static report website as index.html.
 
@@ -230,15 +241,18 @@ Requirements:
 ```
 
 ## Best practices
+
 - Keep animation minimal to preserve readability and avoid motion-heavy UX
 - Prefer semantic headings and short sections for report scanning
-- Validate upload response and include fallback server retries if needed
+- Validate upload response and retry between available Originless endpoints if needed
 - For sensitive reports, encrypt content before upload and share password out-of-band
 
 ## Troubleshooting
-- Upload failed (`4xx/5xx`): retry with public/fallback Originless servers
+
+- Upload failed (`4xx/5xx`): retry with the available Originless endpoint (`localhost` or `filedrop`)
 - Blank page after unlock: verify encrypted payload base64 and AES-GCM packing
 - Wrong password always fails: ensure identical PBKDF2 settings (`100000`, `SHA-256`, 32-byte key)
 
 ## See also
-- [anonymous-file-upload.md](anonymous-file-upload.md) — Originless endpoints, fallback strategy, and pinning
+
+- [anonymous-file-upload.md](anonymous-file-upload.md) — Originless endpoints and pinning

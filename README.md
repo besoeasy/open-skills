@@ -12,6 +12,7 @@ We recommend https://opencode.ai/ as an open-source, free starting point for age
  - [Using Nostr](./using-nostr.md) — Post public notes and send encrypted direct messages on the Nostr decentralized protocol.
  - [Get Crypto Price](./get-crypto-price.md) — Fetch current and historical crypto prices (CoinGecko, Binance, Coinbase) and compute ATH/ATL for common time windows.
  - [Check Crypto Address Balance](./check-crypto-address-balance.md) — Query address balances for BTC, ETH, BSC, Solana, LTC, and more using free public APIs (Blockchain.info, Etherscan, BscScan, Solana RPC, Chain.so).
+ - [PDF Manipulation](./pdf-manipulation.md) — Merge, split, extract text/images, redact, compress, encrypt, and watermark PDFs using pdftk, qpdf, poppler-utils, and ghostscript.
  - [Telegram (Telegraf)](./using-telegraf.md) — Node.js examples for building Telegram bots with `telegraf` (polling, webhooks, media, inline buttons).
  - [YouTube Download](./using-youtube-download.md) — Use `yt-dlp` + `ffmpeg` to download highest-quality video and extract MP3 audio.
  - [Web Scraping (Chrome + DuckDuckGo)](./using-web-scraping.md) — Headless Chrome (Playwright/Puppeteer) + DuckDuckGo search; respects `robots.txt`, rate-limits, and returns structured JSON.

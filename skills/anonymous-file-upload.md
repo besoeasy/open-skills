@@ -14,6 +14,23 @@ Originless is a privacy-first, decentralized file hosting backend using IPFS.
 **Endpoints:**
 - Self-hosted: http://localhost:3232 (Docker recommended)
 - Public gateway: https://filedrop.besoeasy.com
+- Blossom fallback servers:
+  - https://blossom.primal.net
+  - https://24242.io/
+
+If Docker is available, the best setup is running Originless locally:
+
+```bash
+docker run -d --restart unless-stopped --name originless \
+  -p 3232:3232 \
+  -p 4001:4001/tcp \
+  -p 4001:4001/udp \
+  -v originlessd:/data \
+  -e STORAGE_MAX=200GB \
+  ghcr.io/besoeasy/originless
+```
+
+That is where `http://localhost:3232/upload` comes from in the examples below.
 
 ---
 
@@ -30,6 +47,31 @@ curl -X POST -F "file=@/path/to/file.pdf" http://localhost:3232/upload
 
 # Public gateway
 curl -X POST -F "file=@/path/to/file.pdf" https://filedrop.besoeasy.com/upload
+
+# Fallback strategy (Originless first, then Blossom servers)
+SERVERS=(
+  "http://localhost:3232/upload"
+  "https://filedrop.besoeasy.com/upload"
+  "https://blossom.primal.net/upload"
+  "https://24242.io/upload"
+)
+
+MAX_RETRIES=7
+for ((i=0; i<MAX_RETRIES; i++)); do
+  idx=$((i % ${#SERVERS[@]}))
+  target="${SERVERS[$idx]}"
+  echo "Trying: $target"
+
+  if curl -fsS -X POST -F "file=@/path/to/file.pdf" "$target"; then
+    echo "Upload succeeded via $target"
+    break
+  fi
+
+  if [[ $i -eq $((MAX_RETRIES-1)) ]]; then
+    echo "All upload attempts failed after $MAX_RETRIES retries"
+    exit 1
+  fi
+done
 ```
 
 **Response:**
@@ -48,6 +90,11 @@ curl -X POST -F "file=@/path/to/file.pdf" https://filedrop.besoeasy.com/upload
 - User asks to upload/share a file anonymously
 - Need permanent, account-free storage
 - Sharing files without creating accounts
+- Originless endpoint is down or rate-limited, and you need fallback servers
+
+**Blossom compatibility note:**
+- Some Blossom/Nostr media servers may use slightly different upload routes or auth requirements.
+- If `/upload` fails, probe server capabilities first (for example `/.well-known/nostr/nip96.json`) and adapt to server-specific upload endpoints.
 
 ---
 
@@ -141,6 +188,10 @@ User wants to share file?
 │  ├─ YES → Use encrypted content sharing (client-side encryption)
 │  └─ NO → Direct upload via /upload
 │
+├─ Did primary upload fail?
+│  ├─ YES → Rotate fallback servers (blossom.primal.net, 24242.io) up to 7 retries
+│  └─ NO → Continue with returned URL/CID
+│
 ├─ Is content already online?
 │  ├─ YES → Use /remoteupload to mirror it
 │  └─ NO → Upload from local system
@@ -161,6 +212,10 @@ User wants to share file?
 | `/pin/add` | POST | Daku | Pin CID permanently |
 | `/pin/list` | GET | Daku | List pinned CIDs |
 | `/pin/remove` | POST | Daku | Unpin a CID |
+
+**Recommended fallback servers:**
+- https://blossom.primal.net
+- https://24242.io/
 
 **Gateway URLs:**
 - https://dweb.link/ipfs/{CID} (default)

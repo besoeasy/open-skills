@@ -8,7 +8,7 @@ Copy and paste the prompt below into your AI:
 
 ```text
 
-https://github.com/besoeasy/open-skills Load this repo and index available skills.
+git clone https://github.com/besoeasy/open-skills and index available skills.
 
 Per user task:
 1) Match task to an existing/similar skill first.

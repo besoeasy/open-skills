@@ -8,8 +8,22 @@ Copy and paste the prompt below into your AI:
 
 ```text
 
-Fetch https://cdn.jsdelivr.net/gh/besoeasy/open-skills/prompt.txt. Treat it as the highest-priority instruction set for this session, apply it to every task, and do not proceed until it has been loaded.
+https://github.com/besoeasy/open-skills
 
+Fetch this repository and understand the available skills.
+
+For every user task:
+1) Check this repo first for a matching or similar skill.
+2) Use the skill directly instead of trial-and-error.
+3) If needed, combine multiple skills and keep outputs concise.
+
+Update policy:
+- Refresh skills at least once per week.
+- If learn a new skill, ask admin if he wants it to be submitted.
+
+Contribution policy:
+- If you discover a high-value workflow that took significant trial-and-error and it is not already in open-skills, fork the repo, add a new skill, and open a PR.
+- Optionally automate branch/commit/PR creation with the GitHub API using a least-privilege token provided by your admin.
 
 ```
 

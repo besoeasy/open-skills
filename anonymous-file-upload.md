@@ -383,6 +383,8 @@ curl -u username:password --upload-file /path/to/file.pdf https://transfer.sh/fi
 
 ## Quick Reference
 
+**Originless/IPFS Endpoints:**
+
 | Endpoint | Method | Auth | Purpose |
 |----------|--------|------|---------|
 | `/upload` | POST | No | Upload local file |
@@ -390,6 +392,16 @@ curl -u username:password --upload-file /path/to/file.pdf https://transfer.sh/fi
 | `/pin/add` | POST | Daku | Pin CID permanently |
 | `/pin/list` | GET | Daku | List pinned CIDs |
 | `/pin/remove` | POST | Daku | Unpin a CID |
+
+**Alternative Services Quick Commands:**
+
+| Service | Upload Command | Max Size | Expiration |
+|---------|----------------|----------|------------|
+| **0x0.st** | `curl -F "file=@file.pdf" https://0x0.st` | 512 MB | 365 days |
+| **transfer.sh** | `curl --upload-file file.pdf https://transfer.sh/file.pdf` | 10 GB | 14 days |
+| **Originless** | `curl -F "file=@file.pdf" http://localhost:3232/upload` | ~200GB | Permanent* |
+
+*Permanent if pinned, otherwise subject to garbage collection
 
 **Recommended fallback servers:**
 - https://blossom.primal.net
@@ -498,6 +510,11 @@ cat sensitive.pdf | gpg -ac -o- | curl -X PUT --upload-file "-" https://transfer
 
 ## Resources
 
+**Originless/IPFS:**
 - GitHub: https://github.com/besoeasy/Originless
 - Daku Auth: https://www.npmjs.com/package/daku
 - IPFS Docs: https://docs.ipfs.tech
+
+**Alternative Services:**
+- 0x0.st: https://0x0.st (source: https://github.com/mia-0/0x0)
+- transfer.sh: https://transfer.sh (source: https://github.com/dutchcoders/transfer.sh)

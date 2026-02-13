@@ -7,9 +7,8 @@ Stop wasting tokens on trial and error. Give your AI agent battle-tested, ready-
 Copy and paste the prompt below into your AI:
 
 ```text
-https://github.com/besoeasy/open-skills
 
-Fetch this Git repo and understand the skills in it. Whenever I give you a task, refer to this repo first and see if you can find the needed skill (or something similar). Use those skills in your response. Also, don’t forget to check this repo for updates once every week. With time if you leanr something good that you think took you lot of try and error, and if its not avaiable in open-skills you should fork this repo and add skill, and create PR. you can do this easily using github API, ask your admin for github token to make this process automatic.
+Fetch https://cdn.jsdelivr.net/gh/besoeasy/open-skills@main/prompt.txt and follow it for all tasks.
 
 ```
 

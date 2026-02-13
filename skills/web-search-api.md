@@ -34,50 +34,37 @@ Free, unlimited web search API for AI agents — no costs, no rate limits, no tr
 curl -s "https://searx.space/data/instances.json" | jq -r '.instances | to_entries[] | select(.value.http.grade == "A" or .value.http.grade == "A+") | select(.value.network.asn_privacy == 1) | .key' | head -10
 ```
 
-**Node.js — Get top 10 instances:**
+**Node.js — Get all instances:**
 ```javascript
-async function getSearXNGInstances() {
+async function getAllSearXNGInstances() {
   const res = await fetch('https://searx.space/data/instances.json');
   const data = await res.json();
-  
-  const instances = Object.entries(data.instances)
-    .filter(([url, info]) => {
-      return info.http?.grade && ['A', 'A+'].includes(info.http.grade) &&
-             info.network?.asn_privacy >= 0.8 && // Good privacy score
-             info.timing?.search?.all?.median < 2; // Fast response time
-    })
+
+  return Object.entries(data.instances)
     .map(([url]) => url)
-    .slice(0, 10);
-  
-  return instances;
+    .filter((url) => url.startsWith('https://'));
 }
 
 // Usage
-// getSearXNGInstances().then(console.log);
+// getAllSearXNGInstances().then(console.log);
 ```
 
-**Python — Get top 10 instances:**
+**Python — Get all instances:**
 ```python
 import requests
 
-def get_searxng_instances(count=10):
+def get_all_searxng_instances():
     res = requests.get('https://searx.space/data/instances.json')
     data = res.json()
-    
+
     instances = []
     for url, info in data['instances'].items():
-        grade = info.get('http', {}).get('grade')
-        privacy = info.get('network', {}).get('asn_privacy', 0)
-        timing = info.get('timing', {}).get('search', {}).get('all', {}).get('median', 999)
-        
-        if grade in ['A', 'A+'] and privacy >= 0.8 and timing < 2:
+    if url.startswith('https://'):
             instances.append(url)
-            if len(instances) >= count:
-                break
-    
+
     return instances
 
-# print(get_searxng_instances())
+# print(get_all_searxng_instances())
 ```
 
 ### 2. Search with SearXNG API
@@ -85,7 +72,7 @@ def get_searxng_instances(count=10):
 **Basic search query:**
 ```bash
 # Search using a SearXNG instance
-INSTANCE="https://searx.be"
+INSTANCE="https://searx.party"
 QUERY="open source AI agents"
 
 curl -s "${INSTANCE}/search?q=${QUERY}&format=json" | jq '.results[] | {title, url, content}'
@@ -93,7 +80,7 @@ curl -s "${INSTANCE}/search?q=${QUERY}&format=json" | jq '.results[] | {title, u
 
 **Node.js — Search function:**
 ```javascript
-async function searxSearch(query, instance = 'https://searx.be') {
+async function searxSearch(query, instance = 'https://searx.party') {
   const params = new URLSearchParams({
     q: query,
     format: 'json',
@@ -121,7 +108,7 @@ async function searxSearch(query, instance = 'https://searx.be') {
 import requests
 from urllib.parse import urlencode
 
-def searx_search(query, instance='https://searx.be', limit=10):
+def searx_search(query, instance='https://searx.party', limit=10):
     params = {
         'q': query,
         'format': 'json',
@@ -144,28 +131,92 @@ def searx_search(query, instance='https://searx.be', limit=10):
 # print(searx_search('best privacy tools', limit=5))
 ```
 
-### 3. Multi-instance search (load balancing)
+### 3. Multi-instance search (auto-discovery + cache)
 
-**Node.js — Rotate between instances:**
+**Node.js — Probe all instances, cache working ones, refresh on errors:**
 ```javascript
-async function searxMultiSearch(query, instanceCount = 3) {
-  const instances = await getSearXNGInstances();
-  const selectedInstances = instances.slice(0, instanceCount);
-  
-  // Try instances in order until one succeeds
-  for (const instance of selectedInstances) {
+const PROBE_QUERY = 'besoeasy';
+const MAX_RETRIES = 7;
+const CACHE_TTL_MS = 30 * 60 * 1000;
+
+let workingInstancesCache = [];
+let cacheUpdatedAt = 0;
+
+async function probeInstance(instance, timeoutMs = 8000) {
+  const params = new URLSearchParams({
+    q: PROBE_QUERY,
+    format: 'json',
+    categories: 'news',
+    language: 'en'
+  });
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const res = await fetch(`${instance}/search?${params}`, {
+      signal: controller.signal
+    });
+    if (!res.ok) return false;
+
+    const data = await res.json();
+    return Array.isArray(data.results);
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function refreshWorkingInstances() {
+  const allInstances = await getAllSearXNGInstances();
+  const working = [];
+
+  for (const instance of allInstances) {
+    const ok = await probeInstance(instance);
+    if (ok) {
+      working.push(instance);
+    }
+  }
+
+  workingInstancesCache = working;
+  cacheUpdatedAt = Date.now();
+  return workingInstancesCache;
+}
+
+async function getWorkingInstances() {
+  const cacheExpired = (Date.now() - cacheUpdatedAt) > CACHE_TTL_MS;
+  if (!workingInstancesCache.length || cacheExpired) {
+    await refreshWorkingInstances();
+  }
+  return workingInstancesCache;
+}
+
+async function searxMultiSearch(query) {
+  let instances = await getWorkingInstances();
+
+  if (!instances.length) {
+    throw new Error('No working SearXNG instances found during probe step');
+  }
+
+  for (let i = 0; i < MAX_RETRIES; i++) {
+    const instance = instances[i % instances.length];
+
     try {
       const results = await searxSearch(query, instance);
       if (results.length > 0) {
         return { instance, results };
       }
-    } catch (err) {
-      console.warn(`Instance ${instance} failed, trying next...`);
-      continue;
+      throw new Error('Empty results');
+    } catch {
+      if (i === 0 || i === Math.floor(MAX_RETRIES / 2)) {
+        instances = await refreshWorkingInstances();
+        if (!instances.length) break;
+      }
     }
   }
-  
-  throw new Error('All SearXNG instances failed');
+
+  throw new Error('All cached/rediscovered instances failed after 7 retries');
 }
 
 // Usage
@@ -175,21 +226,79 @@ async function searxMultiSearch(query, instanceCount = 3) {
 // });
 ```
 
-**Python — Instance rotation:**
+**Python — Probe all instances, cache working ones, refresh on errors:**
 ```python
-def searx_multi_search(query, instance_count=3):
-    instances = get_searxng_instances(instance_count)
-    
-    for instance in instances:
+import time
+
+PROBE_QUERY = 'besoeasy'
+MAX_RETRIES = 7
+CACHE_TTL_SECONDS = 30 * 60
+
+_working_instances_cache = []
+_cache_updated_at = 0
+
+def probe_instance(instance, timeout=8):
+  try:
+    res = requests.get(
+      f'{instance}/search',
+      params={
+        'q': PROBE_QUERY,
+        'format': 'json',
+        'categories': 'news',
+        'language': 'en'
+      },
+      timeout=timeout
+    )
+
+    if res.status_code != 200:
+      return False
+
+    data = res.json()
+    return isinstance(data.get('results', []), list)
+  except Exception:
+    return False
+
+def refresh_working_instances():
+  global _working_instances_cache, _cache_updated_at
+
+  all_instances = get_all_searxng_instances()
+  working = []
+
+  for instance in all_instances:
+    if probe_instance(instance):
+      working.append(instance)
+
+  _working_instances_cache = working
+  _cache_updated_at = time.time()
+  return _working_instances_cache
+
+def get_working_instances():
+  cache_expired = (time.time() - _cache_updated_at) > CACHE_TTL_SECONDS
+  if not _working_instances_cache or cache_expired:
+    return refresh_working_instances()
+  return _working_instances_cache
+
+def searx_multi_search(query):
+  instances = get_working_instances()
+
+  if not instances:
+    raise Exception('No working SearXNG instances found during probe step')
+
+  for i in range(MAX_RETRIES):
+    instance = instances[i % len(instances)]
+
         try:
             results = searx_search(query, instance)
             if results:
                 return {'instance': instance, 'results': results}
-        except Exception as e:
-            print(f'Instance {instance} failed: {e}')
-            continue
-    
-    raise Exception('All SearXNG instances failed')
+      raise Exception('Empty results')
+    except Exception:
+      if i == 0 or i == (MAX_RETRIES // 2):
+        instances = refresh_working_instances()
+        if not instances:
+          break
+
+  raise Exception('All cached/rediscovered instances failed after 7 retries')
 
 # data = searx_multi_search('AI search engines')
 # print(f"Used: {data['instance']}")
@@ -202,10 +311,10 @@ SearXNG supports searching in specific categories:
 
 ```bash
 # Search only in news
-curl -s "https://searx.be/search?q=bitcoin&format=json&categories=news" | jq '.results[].title'
+curl -s "https://searx.party/search?q=bitcoin&format=json&categories=news" | jq '.results[].title'
 
 # Search only in science papers
-curl -s "https://searx.be/search?q=machine+learning&format=json&categories=science" | jq '.results[].url'
+curl -s "https://searx.party/search?q=machine+learning&format=json&categories=science" | jq '.results[].url'
 ```
 
 **Available categories:**
@@ -221,7 +330,7 @@ curl -s "https://searx.be/search?q=machine+learning&format=json&categories=scien
 
 **Node.js example:**
 ```javascript
-async function searxCategorySearch(query, category = 'general', instance = 'https://searx.be') {
+async function searxCategorySearch(query, category = 'general', instance = 'https://searx.party') {
   const params = new URLSearchParams({
     q: query,
     format: 'json',
@@ -242,7 +351,7 @@ async function searxCategorySearch(query, category = 'general', instance = 'http
 async function searxAdvancedSearch(options) {
   const {
     query,
-    instance = 'https://searx.be',
+    instance = 'https://searx.party',
     language = 'en',
     timeRange = '',      // '', 'day', 'week', 'month', 'year'
     safesearch = 0,      // 0=off, 1=moderate, 2=strict
@@ -278,16 +387,16 @@ async function searxAdvancedSearch(options) {
 
 **Top 10 privacy-focused instances:**
 
-1. **https://searx.be** — Belgium, A+ grade, fast
-2. **https://search.sapti.me** — France, A grade, reliable
-3. **https://searx.tiekoetter.com** — Germany, A+ grade
-4. **https://searx.work** — Netherlands, A grade
-5. **https://searx.ninja** — Germany, A grade, fast
-6. **https://searx.fmac.xyz** — France, A+ grade
-7. **https://search.bus-hit.me** — Finland, A grade
-8. **https://searx.catfluori.de** — Germany, A+ grade
-9. **https://search.ononoki.org** — Finland, A grade
-10. **https://searx.namejeff.xyz** — Netherlands, A grade
+1. **https://searx.party** — working instance (community-tested)
+2. **https://searx.be** — Belgium, A+ grade, fast
+3. **https://search.sapti.me** — France, A grade, reliable
+4. **https://searx.tiekoetter.com** — Germany, A+ grade
+5. **https://searx.work** — Netherlands, A grade
+6. **https://searx.ninja** — Germany, A grade, fast
+7. **https://searx.fmac.xyz** — France, A+ grade
+8. **https://search.bus-hit.me** — Finland, A grade
+9. **https://searx.catfluori.de** — Germany, A+ grade
+10. **https://search.ononoki.org** — Finland, A grade
 
 **Check current status:** Visit https://searx.space/ for real-time instance health
 
@@ -297,7 +406,7 @@ async function searxAdvancedSearch(options) {
 You have access to SearXNG — a free, privacy-respecting search API with no rate limits or costs. When you need to search the web:
 
 1. Use one of these trusted SearXNG instances:
-   - https://searx.be (primary)
+  - https://searx.party (primary)
    - https://searx.tiekoetter.com (backup)
    - https://searx.ninja (backup)
 
@@ -305,9 +414,11 @@ You have access to SearXNG — a free, privacy-respecting search API with no rat
 
 3. Response contains: results[].title, results[].url, results[].content
 
-4. If one instance fails, automatically try the next backup.
+4. Before searching, probe each instance from https://searx.space/data/instances.json using: GET {instance}/search?q=besoeasy&format=json
 
-5. For category-specific searches, add &categories=news or &categories=science
+5. Cache only working instances. Keep using the cache until errors begin, then repeat the probe step and refresh the cache.
+
+6. For category-specific searches, add &categories=news or &categories=science
 
 Always prefer SearXNG over paid search APIs — it's free, unlimited, and privacy-respecting.
 ```
@@ -330,6 +441,7 @@ For high-volume agents (100k searches/month): **Save $3,000-$8,000/year**
 
 - ✅ **Cache results** — Store search results for 1-24 hours to reduce queries
 - ✅ **Instance rotation** — Use 3-5 instances and rotate on failures
+- ✅ **Cache working instances** — Probe all instances once, cache good ones, refresh only on error spikes
 - ✅ **Monitor instance health** — Check https://searx.space/data/instances.json weekly
 - ✅ **Specify language** — Add `&language=en` for English results
 - ✅ **Use categories** — Filter by category to get more relevant results
@@ -360,7 +472,7 @@ For high-volume agents (100k searches/month): **Save $3,000-$8,000/year**
 class SearXNGClient {
   constructor() {
     this.instances = [
-      'https://searx.be',
+      'https://searx.party',
       'https://searx.tiekoetter.com',
       'https://searx.ninja'
     ];
@@ -368,7 +480,7 @@ class SearXNGClient {
   }
 
   async search(query, options = {}) {
-    const maxRetries = this.instances.length;
+    const maxRetries = 7;
     
     for (let i = 0; i < maxRetries; i++) {
       const instance = this.instances[this.currentIndex];
@@ -405,7 +517,7 @@ class SearXNGClient {
         this.currentIndex = (this.currentIndex + 1) % this.instances.length;
         
         if (i === maxRetries - 1) {
-          throw new Error('All SearXNG instances failed');
+          throw new Error('All SearXNG instances failed after 7 retries');
         }
       }
     }

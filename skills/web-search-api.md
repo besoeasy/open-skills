@@ -1,3 +1,8 @@
+---
+name: web-search-api
+description: Use free SearXNG web search APIs for agent-friendly, privacy-first, and high-volume search tasks.
+---
+
 # Web Search API (Free) — SearXNG
 
 Free, unlimited web search API for AI agents — no costs, no rate limits, no tracking. Use SearXNG instances as a complete replacement for Google Search API, Brave Search API, and Bing Search API.

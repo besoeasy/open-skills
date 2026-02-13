@@ -1,3 +1,8 @@
+---
+name: using-youtube-download
+description: Download YouTube video or audio with yt-dlp and ffmpeg at highest available quality.
+---
+
 # YouTube Download Skill
 
 Teach how to download YouTube videos as video files and MP3 audio, defaulting to highest quality.

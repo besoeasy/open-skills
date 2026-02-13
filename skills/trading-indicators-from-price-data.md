@@ -1,3 +1,8 @@
+---
+name: trading-indicators-from-price-data
+description: Compute common trading indicators from OHLCV price data for analysis and strategy development.
+---
+
 # Trading Indicators from Price Data (20 common indicators)
 
 Calculate 20 widely used trading indicators from OHLCV candles (open, high, low, close, volume) using Python.

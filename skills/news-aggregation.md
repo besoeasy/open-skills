@@ -1,3 +1,8 @@
+---
+name: news-aggregation
+description: Aggregate and deduplicate recent news from multiple sources into concise topic summaries.
+---
+
 # News Aggregation (Multi-Source, 3-Day Window)
 
 Collect latest news from multiple sites and aggregators, merge similar stories into short topics, and list all main source links under each topic.

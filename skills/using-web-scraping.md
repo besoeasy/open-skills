@@ -1,3 +1,8 @@
+---
+name: using-web-scraping
+description: Search and scrape public web content with headless Chrome and DuckDuckGo using safe practices.
+---
+
 # Web Scraping Skill — Chrome (Playwright) + DuckDuckGo
 
 A privacy-minded, agent-facing web-scraping skill that uses headless Chrome (Playwright/Puppeteer) and DuckDuckGo for search. Focuses on: reliable navigation, extracting structured text, obeying robots.txt, and rate-limiting.

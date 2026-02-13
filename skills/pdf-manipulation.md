@@ -1,3 +1,8 @@
+---
+name: pdf-manipulation
+description: Manipulate PDF files including merge, split, extract, redact, convert, and secure workflows.
+---
+
 # PDF Manipulation Skill
 
 Merge, split, extract, redact, and transform PDF files using free command-line tools and libraries. Covers common PDF operations for document automation workflows.

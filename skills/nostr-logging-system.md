@@ -1,3 +1,8 @@
+---
+name: nostr-logging-system
+description: Publish operational logs over Nostr with public events and private admin messages for sensitive logs.
+---
+
 # Nostr Logging System
 
 Use Nostr as a distributed logging transport: publish non-sensitive logs publicly, and send sensitive logs privately to the admin via Nostr DM.

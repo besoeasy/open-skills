@@ -1,3 +1,8 @@
+---
+name: using-nostr
+description: Post notes, send encrypted messages, and interact with relays using the Nostr protocol.
+---
+
 # NOSTR Posting Skill
 # Using nostr-sdk library
 # Source: https://github.com/besoeasy/nostr-sdk

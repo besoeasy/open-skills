@@ -1,3 +1,8 @@
+---
+name: check-crypto-address-balance
+description: Check cryptocurrency wallet balances across multiple blockchains using free public APIs.
+---
+
 # Check Crypto Address Balance Skill
 
 Query cryptocurrency address balances across multiple blockchains using free public APIs. Supports Bitcoin, Ethereum, BSC, Solana, Litecoin, and other major chains without requiring API keys for basic queries.

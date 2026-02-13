@@ -1,3 +1,8 @@
+---
+name: get-crypto-price
+description: Fetch current and historical crypto prices and compute ATH or ATL over common time windows.
+---
+
 # Get Crypto Price (minimal guide)
 
 This short guide shows how to fetch current prices and at least 3 months of past price action using CoinGecko, Binance, and Coinbase public APIs. It also shows how to compute ATH (highest) and ATL (lowest) within time windows: 1 DAY, 1 WEEK, 1 MONTH.

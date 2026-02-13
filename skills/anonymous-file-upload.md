@@ -1,3 +1,8 @@
+---
+name: anonymous-file-upload
+description: Upload and host files anonymously using decentralized storage with Originless and IPFS.
+---
+
 # Originless Agent Skill
 # Decentralized File Storage & Anonymous Content Hosting
 # Source: https://github.com/besoeasy/Originless

@@ -1,3 +1,8 @@
+---
+name: using-telegram-bot
+description: Build and run Telegram bots in Node.js using Telegraf with practical command patterns.
+---
+
 # Telegram (Telegraf) Skill — Node.js
 
 Short guide to build Telegram bots with `telegraf` (Node.js).

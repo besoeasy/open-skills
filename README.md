@@ -8,7 +8,7 @@ Copy and paste the prompt below into your AI:
 
 ```text
 Load and follow this skill first:
-https://raw.githubusercontent.com/besoeasy/open-skills/main/skill.md
+https://cdn.jsdelivr.net/gh/besoeasy/open-skills/skill.md
 ```
 
 ## Why This Matters

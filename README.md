@@ -26,6 +26,7 @@ Stop wasting tokens on trial and error. Give your AI agent battle-tested, ready-
 - ⚡ **10-50x faster execution** — No trial-and-error loops
 - 🎯 **Higher success rate** — Proven patterns that work reliably
 - 🔒 **Privacy-respecting** — Open-source tools, no unnecessary third-party services
+- 🔍 **Zero search API costs** — Use free SearXNG instances instead of paying for Brave Search ($5/1000), Google Search API, or Bing API
 
 ## Quick Start
 
@@ -73,6 +74,36 @@ Result: ✅ 10 seconds, ~1,000 tokens, works first time
 
 **Savings:** 98% fewer tokens, 10-20x faster, reliable results
 
+---
+
+**Example 2: Web Search (API Cost Elimination)**
+
+**Without open-skills:**
+```
+User: "Search for recent AI agent news"
+
+Agent → Uses Google Custom Search API ($5/1000 queries)
+      → Or Brave Search API ($5/1000 queries)
+      → Bing Search API ($3-7/1000 queries)
+      → Monthly cost: $50-100+ for 10k searches
+      
+Result: ❌ Expensive, requires API keys, tracked searches
+```
+
+**With open-skills:**
+```
+User: "Search for recent AI agent news"
+
+Agent → Uses SearXNG skill (learns from using-searxng.md)
+      → Connects to free SearXNG instance (searx.be)
+      → Gets results from 70+ search engines
+      → No API key, no rate limits, no tracking
+      
+Result: ✅ $0 cost, unlimited queries, privacy-respecting
+```
+
+**Savings:** $360-$840/year for typical usage, $3,000-$8,000/year for high-volume agents
+
 ## Cost Savings Calculator
 
 Typical AI agent task without pre-built skills: **20-50 API calls** (trial and error)  
@@ -90,11 +121,19 @@ Same task with open-skills: **1-3 API calls** (direct execution)
 - Claude: Save ~$14.70/month
 - For teams running 1,000+ agent tasks: **Save $240-$1,470/month**
 
+**Plus:** Eliminate search API costs entirely by using free SearXNG instances instead of:
+- Google Custom Search API ($5/1000 queries) → **$0 with SearXNG**
+- Brave Search API ($5/1000 queries) → **$0 with SearXNG**
+- Bing Search API ($3-7/1000 queries) → **$0 with SearXNG**
+
+**Total potential savings: $600-$2,300/month** for active AI agents
+
 ## Perfect For
 
 - 🤖 **Autonomous AI agents** — Give your agent production-ready capabilities out of the box
 - 💼 **Business automation** — Crypto monitoring, document processing, web scraping, notifications
-- 🛠️ **Developer tools** — Integrate with OpenCode.ai, Claude Desktop, custom MCP servers
+- � **Eliminating search API costs** — Free SearXNG instances replace expensive Brave Search, Google, and Bing APIs
+- �🛠️ **Developer tools** — Integrate with OpenCode.ai, Claude Desktop, custom MCP servers
 - 📚 **AI learning** — Study working examples instead of guessing API patterns
 - 🔐 **Privacy-conscious projects** — All skills use open-source tools and public APIs
 
@@ -125,6 +164,7 @@ AI agents are incredibly powerful, but they waste enormous amounts of compute re
 - [PDF Manipulation](./skills/pdf-manipulation.md) — Merge, split, extract text/images, redact, compress, encrypt, and watermark PDFs using pdftk, qpdf, poppler-utils, and ghostscript.
 - [Telegram (Telegraf)](./skills/using-telegram-bot.md) — Node.js examples for building Telegram bots with `telegraf` (polling, webhooks, media, inline buttons).
 - [YouTube Download](./skills/using-youtube-download.md) — Use `yt-dlp` + `ffmpeg` to download highest-quality video and extract MP3 audio.
+- [SearXNG Privacy Search](./skills/using-searxng.md) — Free, unlimited web search API via SearXNG instances. No API keys, no rate limits, no costs. Discover active instances from searx.space and save $100s vs Google Search API.
 - [Web Scraping (Chrome + DuckDuckGo)](./skills/using-web-scraping.md) — Headless Chrome (Playwright/Puppeteer) + DuckDuckGo search; respects `robots.txt`, rate-limits, and returns structured JSON.
 
 ## Contributing

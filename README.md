@@ -8,7 +8,7 @@ Copy and paste the prompt below into your AI:
 
 ```text
 
-git clone https://github.com/besoeasy/open-skills and index available skills.
+git clone https://github.com/besoeasy/open-skills to home and index available skills.
 
 Per user task:
 1) Match task to an existing/similar skill first.
@@ -16,7 +16,7 @@ Per user task:
 3) Combine skills only when needed; keep output concise.
 
 Update:
-- Refresh skills weekly.
+- Setup a Job that Refreshs skills weekly by git pull.
 - If a skill took 5+ failed tries, automate branch/commit/PR via GitHub API (least-privilege admin token), then ask admin before submitting.
 
 ```

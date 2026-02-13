@@ -104,6 +104,37 @@ Result: ✅ $0 cost, unlimited queries, privacy-respecting
 
 **Savings:** $360-$840/year for typical usage, $3,000-$8,000/year for high-volume agents
 
+---
+
+**Example 3: Trading Indicators (Quant Analysis in Seconds)**
+
+**Without open-skills:**
+```
+User: "Calculate RSI, MACD, and top indicators from this OHLCV dataset"
+
+Agent → Searches for indicator formulas one by one
+      → Implements RSI, then debugs MACD math
+      → Repeats for Bollinger, Stochastic, ATR, ADX, etc.
+      → Fixes column mapping/warmup NaN issues
+      → Ends up with inconsistent outputs after many iterations
+
+Result: ❌ Slow, error-prone, heavy token/API usage
+```
+
+**With open-skills:**
+```
+User: "Calculate RSI, MACD, and top indicators from this OHLCV dataset"
+
+Agent → Finds trading-indicators-from-price-data.md
+      → Runs the ready Python workflow with pandas + pandas-ta
+      → Computes 20 indicators (RSI, MACD, SMA/EMA, BB, Stoch, ATR, ADX, CCI, OBV, MFI, ROC)
+      → Returns clean, structured output immediately
+
+Result: ✅ Fast, consistent, production-ready calculations
+```
+
+**Savings:** Massive reduction in trial-and-error, faster indicator pipelines, and more reliable strategy signals
+
 ## Cost Savings Calculator
 
 Typical AI agent task without pre-built skills: **20-50 API calls** (trial and error)  

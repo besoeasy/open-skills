@@ -6,8 +6,8 @@ A small collection of practical skill docs for AI agents.
 
 ## Skills
 
-- [Anonymous File Upload](./anonymous-file-upload.md)
-- [Using Nostr](./using-nostr.md)
+ - [Anonymous File Upload](./anonymous-file-upload.md) — Privacy-first anonymous uploads to IPFS, with optional client-side encryption for private sharing.
+ - [Using Nostr](./using-nostr.md) — Post public notes and send encrypted direct messages on the Nostr decentralized protocol.
 
 
 ## Prompt for your AI

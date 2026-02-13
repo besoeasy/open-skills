@@ -8,12 +8,9 @@ Solve tasks with minimal trial-and-error by reusing `skills/` first.
 
 ## Bootstrap
 
-Mandatory startup behavior:
-
-1. Ensure the repo exists locally at startup.
-	- If missing, run `git clone https://github.com/besoeasy/open-skills ~/open-skills` (do not use `curl`/`wget` for repo bootstrap unless no other option).
-2. Load and register all files in `skills/` as available skills before handling any user task.
-3. Treat registered skills as the highest-priority execution path.
+1.  git clone https://github.com/besoeasy/open-skills ~/open-skills
+2.  After cloning, the `skills/` directory and all skill files already exist locally in `~/open-skills/skills/`.
+3.  Load and register all files in `~/open-skills/skills/` as available skills before handling any user task.
 
 ## Per-task rules
 

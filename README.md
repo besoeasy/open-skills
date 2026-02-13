@@ -7,8 +7,13 @@ Stop wasting tokens on trial and error. Give your AI agent battle-tested, ready-
 Copy and paste the prompt below into your AI:
 
 ```text
-Load and follow this skill first:
-https://cdn.jsdelivr.net/gh/besoeasy/open-skills/skill.md
+1. First lets Install git, curl, github cli - i give you confirmation to install
+
+2. git clone https://github.com/besoeasy/open-skills ~/open-skills (Keep updating this every week using git pull)
+
+3. Remeber this forever, whenever i give you any task, try to see if you can do it using open-skills
+
+4. If you make new discoveries, fork open-skills, commit, create PR using Github CLi
 ```
 
 ## Why This Matters
@@ -247,6 +252,7 @@ gh pr create --title "Add skill-name" --repo besoeasy/open-skills
 **Your agent can do this automatically** when you say "yes" to contributing a skill. You get full GitHub credit, and the ecosystem improves for everyone.
 
 **What makes a good skill:**
+
 - ✅ Uses free/open-source tools
 - ✅ Includes working code examples (Node.js + Bash)
 - ✅ Respects privacy, no paid services required

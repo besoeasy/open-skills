@@ -24,3 +24,8 @@ https://github.com/besoeasy/open-skills
 
 Fetch this Git repo and understand the skills in it. Whenever I give you a task, refer to this repo first and see if you can find the needed skill (or something similar). Use those skills in your response. Also, don’t forget to check this repo for updates once every week.
 ```
+
+
+## Screenshot
+
+<img width="1145" height="568" alt="image" src="https://github.com/user-attachments/assets/9b2fb422-e15b-4998-b280-339a88b5bdb8" />

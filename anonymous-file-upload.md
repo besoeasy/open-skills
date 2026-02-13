@@ -201,26 +201,183 @@ curl -X POST http://localhost:3232/pin/remove \
 
 ```
 User wants to share file?
+├─ Must content persist permanently?
+│  ├─ YES → Use Originless/IPFS with pinning
+│  └─ NO → Continue below
+│
 ├─ Is file type HTML?
 │  ├─ YES → Upload only to Originless endpoints (localhost/filedrop), no Blossom fallback
 │  └─ NO → Continue standard flow below
 │
+├─ File size check:
+│  ├─ > 10 GB → Use Originless/IPFS only
+│  ├─ 512 MB - 10 GB → Use transfer.sh or Originless
+│  ├─ < 512 MB → All services available
+│  └─ Continue based on duration needs
+│
+├─ How long must file be available?
+│  ├─ Permanent → Originless/IPFS with pinning
+│  ├─ Up to 1 year → 0x0.st or Originless
+│  ├─ Up to 14 days → transfer.sh
+│  └─ Temporary → Any service
+│
 ├─ Is privacy critical?
-│  ├─ YES → Use encrypted content sharing (client-side encryption)
-│  └─ NO → Direct upload via /upload
+│  ├─ YES → Use encrypted content sharing (client-side encryption) + Originless
+│  │        OR use transfer.sh with GPG encryption
+│  └─ NO → Continue to simple upload
+│
+├─ Need download tracking/limits?
+│  ├─ YES → Use transfer.sh
+│  └─ NO → Continue to simple upload
+│
+├─ Quick temporary share?
+│  ├─ YES → 0x0.st (simplest) or transfer.sh
+│  └─ NO → Originless for reliability
 │
 ├─ Did primary upload fail?
-│  ├─ YES → Rotate fallback servers (blossom.primal.net, 24242.io) up to 7 retries
+│  ├─ YES → Try fallback: transfer.sh → 0x0.st → Blossom servers
 │  └─ NO → Continue with returned URL/CID
 │
-├─ Is content already online?
-│  ├─ YES → Use /remoteupload to mirror it
-│  └─ NO → Upload from local system
-│
-└─ Must content persist forever?
-   ├─ YES → Upload + use pin/add with Daku auth
-   └─ NO → Upload only
+└─ Is content already online?
+   ├─ YES → Use Originless /remoteupload to mirror it
+   └─ NO → Direct upload
 ```
+
+---
+
+## Alternative Anonymous File Hosts
+
+### upload_to_0x0
+
+Upload files to 0x0.st - a simple, no-frills file hosting service.
+
+**Features:**
+- No registration required
+- Files expire after 365 days (1 year)
+- Maximum file size: 512 MB
+- Simple HTTP upload
+
+**Usage:**
+```bash
+# Basic upload
+curl -F "file=@/path/to/file.pdf" https://0x0.st
+
+# With custom filename
+curl -F "file=@/path/to/data.json" https://0x0.st
+
+# Upload with custom expiration (in days, max 365)
+curl -F "file=@/path/to/image.png" -F "expires=30" https://0x0.st
+
+# Upload with secret token for deletion
+curl -F "file=@/path/to/document.pdf" -F "secret=" https://0x0.st
+```
+
+**Response:**
+Returns a direct URL to the uploaded file:
+```
+https://0x0.st/XaBc.pdf
+```
+
+**Delete uploaded file (if secret token was provided):**
+```bash
+curl -F "token=YOUR_SECRET_TOKEN" -F "delete=" https://0x0.st/XaBc.pdf
+```
+
+**When to use:**
+- Quick temporary file sharing (up to 1 year)
+- Smaller files (under 512 MB)
+- When IPFS persistence is not needed
+- Simple paste/screenshot sharing
+- Quick file transfers without accounts
+
+**Limitations:**
+- Files expire after 365 days maximum
+- Not decentralized (single service)
+- No encryption built-in
+- Files can be taken down
+
+---
+
+### upload_to_transfer_sh
+
+Upload files to transfer.sh - a popular temporary file hosting service.
+
+**Features:**
+- No registration required
+- Files expire after 14 days by default
+- Maximum file size: 10 GB
+- Supports encryption with GPG
+- Download count tracking
+
+**Usage:**
+```bash
+# Basic upload
+curl --upload-file /path/to/file.pdf https://transfer.sh/file.pdf
+
+# Upload with custom expiration (max 14 days)
+curl --upload-file /path/to/image.png https://transfer.sh/image.png?expires=7d
+
+# Download count limit
+curl --upload-file /path/to/data.zip https://transfer.sh/data.zip?downloads=5
+
+# Upload with encryption (requires gpg)
+cat /path/to/secret.txt | gpg -ac -o- | curl -X PUT --upload-file "-" https://transfer.sh/secret.txt.gpg
+
+# Upload from stdin
+cat /path/to/file.txt | curl --upload-file "-" https://transfer.sh/file.txt
+
+# Upload directory (tar + gzip)
+tar czf - /path/to/directory | curl --upload-file "-" https://transfer.sh/directory.tar.gz
+
+# Multiple files
+curl --upload-file /path/to/file1.txt https://transfer.sh/file1.txt && \
+curl --upload-file /path/to/file2.txt https://transfer.sh/file2.txt
+```
+
+**Response:**
+Returns a direct URL to the uploaded file:
+```
+https://transfer.sh/random/file.pdf
+```
+
+**Download uploaded file:**
+```bash
+curl https://transfer.sh/random/file.pdf -o file.pdf
+
+# Download and decrypt (if encrypted with gpg)
+curl https://transfer.sh/random/secret.txt.gpg | gpg -d > secret.txt
+```
+
+**Advanced options:**
+```bash
+# Get download count
+curl -H "X-Transfer-Count: true" https://transfer.sh/random/file.pdf
+
+# Upload with basic auth protection
+curl -u username:password --upload-file /path/to/file.pdf https://transfer.sh/file.pdf
+```
+
+**When to use:**
+- Temporary file sharing (up to 14 days)
+- Large files up to 10 GB
+- Quick transfers without persistence needs
+- Download count tracking required
+- Built-in GPG encryption for sensitive data
+- Sending files with expiration/download limits
+
+**Limitations:**
+- Files expire after 14 days maximum
+- Not decentralized (single service)
+- No permanent storage
+- Service availability depends on infrastructure
+
+**Comparison:**
+
+| Service | Max Size | Max Duration | Encryption | Persistence | Best For |
+|---------|----------|--------------|------------|-------------|----------|
+| **Originless/IPFS** | ~200GB (configurable) | Permanent (if pinned) | Client-side | Decentralized | Long-term, censorship-resistant |
+| **transfer.sh** | 10 GB | 14 days | GPG optional | Temporary | Large temporary files |
+| **0x0.st** | 512 MB | 365 days | None | Temporary | Quick sharing, small files |
 
 ---
 
@@ -286,19 +443,55 @@ docker run -d --restart unless-stopped --name originless \
 
 ## Common Patterns
 
-**Screenshot sharing:**
+**Screenshot sharing (permanent):**
+```bash
+# Save to IPFS for permanent storage
+curl -F "file=@screenshot.png" http://localhost:3232/upload
 ```
-Screenshot → upload_to_originless() → Return IPFS link
+
+**Screenshot sharing (temporary):**
+```bash
+# Quick share with 0x0.st
+curl -F "file=@screenshot.png" https://0x0.st
+
+# Or with transfer.sh for larger files
+curl --upload-file screenshot.png https://transfer.sh/screenshot.png
 ```
 
 **Nostr media attachment:**
-```
-Image upload → Get IPFS URL → Embed in Nostr event
+```bash
+# Upload image and embed IPFS URL in Nostr event
+curl -F "file=@image.jpg" https://filedrop.besoeasy.com/upload
+# Returns: https://dweb.link/ipfs/QmX...
 ```
 
-**Anonymous paste:**
+**Anonymous paste (14-day expiration):**
+```bash
+# Quick text sharing
+echo "Secret message" | curl --upload-file "-" https://transfer.sh/message.txt
 ```
-Text → Create temp file → Upload → Return IPFS link
+
+**Anonymous paste (permanent):**
+```bash
+# Permanent text storage
+echo "Important note" > note.txt
+curl -F "file=@note.txt" http://localhost:3232/upload
+```
+
+**Large file transfer:**
+```bash
+# For files 1-10 GB, use transfer.sh
+curl --upload-file large-video.mp4 https://transfer.sh/video.mp4
+
+# For files > 10 GB, use Originless/IPFS
+curl -F "file=@huge-dataset.tar.gz" http://localhost:3232/upload
+```
+
+**Encrypted temporary sharing:**
+```bash
+# Using transfer.sh with GPG
+cat sensitive.pdf | gpg -ac -o- | curl -X PUT --upload-file "-" https://transfer.sh/sensitive.pdf.gpg
+# Share URL + passphrase separately
 ```
 
 ---

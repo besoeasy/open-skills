@@ -259,8 +259,6 @@ gh pr create --title "Add skill-name" --repo besoeasy/open-skills
 - ✅ Solves a common automation task
 - ✅ Tested and production-ready
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for complete guidelines and skill template.
-
 ## Star History
 
 If this saved you time and money, give us a ⭐ and share with other AI agent builders!

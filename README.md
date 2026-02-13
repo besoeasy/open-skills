@@ -9,6 +9,7 @@ A small collection of practical skill docs for AI agents.
  - [Anonymous File Upload](./anonymous-file-upload.md) — Privacy-first anonymous uploads to IPFS, with optional client-side encryption for private sharing.
  - [Using Nostr](./using-nostr.md) — Post public notes and send encrypted direct messages on the Nostr decentralized protocol.
  - [Get Crypto Price](./get-crypto-price.md) — Fetch current and historical crypto prices (CoinGecko, Binance, Coinbase) and compute ATH/ATL for common time windows.
+ - [Telegram (Telegraf)](./using-telegraf.md) — Node.js examples for building Telegram bots with `telegraf` (polling, webhooks, media, inline buttons).
 
 
 ## Prompt for your AI

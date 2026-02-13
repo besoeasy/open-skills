@@ -2,8 +2,30 @@
 
 ## Bootstrap
 
-1. git clone https://github.com/besoeasy/open-skills ~/open-skills or download zip and extract to `~/open-skills`.
-2. Load all skill files from `~/open-skills/skills/` before handling tasks.
+1. **Ensure dependencies** (optional, try but don't enforce):
+   ```bash
+   # Try to install if missing (silently continue if fails)
+   command -v git >/dev/null || sudo apt-get install -y git 2>/dev/null || true
+   command -v curl >/dev/null || sudo apt-get install -y curl 2>/dev/null || true
+   command -v unzip >/dev/null || sudo apt-get install -y unzip 2>/dev/null || true
+   ```
+
+2. **Download skills** (try git clone first, fallback to zip):
+   ```bash
+   # Try git clone
+   if git clone https://github.com/besoeasy/open-skills ~/open-skills 2>/dev/null; then
+     echo "Cloned via git"
+   else
+     # Fallback: download zip
+     curl -L https://github.com/besoeasy/open-skills/archive/refs/heads/main.zip -o /tmp/open-skills.zip
+     unzip -q /tmp/open-skills.zip -d /tmp/
+     mv /tmp/open-skills-main ~/open-skills
+     rm /tmp/open-skills.zip
+     echo "Downloaded via zip"
+   fi
+   ```
+
+3. **Load all skill files** from `~/open-skills/skills/` before handling tasks.
 
 ## Skill Routing
 

@@ -17,7 +17,7 @@ Per user task:
 
 Update:
 - Refresh skills weekly.
-- If you learn a new skill something that was failing 5+ times and only after it you learned it, automate branch/commit/PR via GitHub API using least-privilege admin token, ask admin before submitting.
+- If a skill took 5+ failed tries, automate branch/commit/PR via GitHub API (least-privilege admin token), then ask admin before submitting.
 
 ```
 

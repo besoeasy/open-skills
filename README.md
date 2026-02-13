@@ -7,18 +7,8 @@ Stop wasting tokens on trial and error. Give your AI agent battle-tested, ready-
 Copy and paste the prompt below into your AI:
 
 ```text
-
-git clone https://github.com/besoeasy/open-skills to home and index available skills.
-
-Per user task:
-1) Match task to an existing/similar skill first.
-2) Execute the skill directly (avoid trial-and-error).
-3) Combine skills only when needed; keep output concise.
-
-Update:
-- Setup a Job that Refreshs skills weekly by git pull.
-- If a skill took 5+ failed tries, automate branch/commit/PR via GitHub API (least-privilege admin token), comment what problem you found and what you fixed.
-
+Load and follow this skill first:
+https://raw.githubusercontent.com/besoeasy/open-skills/main/skill.md
 ```
 
 ## Why This Matters
@@ -48,6 +38,8 @@ Update:
 ## Quick Start
 
 We recommend https://opencode.ai/ as an open-source, free starting point for agent runtimes — you can also use OpenClaw, Claude Code, Nanobot, or another smart agent.
+
+For OpenCode/OpenClaw-style runtimes, load [skill.md](skill.md) first as the repository entrypoint, then route into files under `skills/`.
 
 ## Real-World Example
 

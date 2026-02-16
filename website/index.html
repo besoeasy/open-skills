@@ -97,7 +97,7 @@
           <a href="#" class="text-xl font-bold tracking-tight bg-black text-white px-2 py-1">OPEN-SKILLS</a>
           <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
             <a href="#features" class="hover:text-black transition-colors">Benefits</a>
-            <a href="#skills" class="hover:text-black transition-colors">Skills</a>
+            <a href="#how-it-works" class="hover:text-black transition-colors">How It Works</a>
           </nav>
         </div>
         <div class="flex items-center gap-4">
@@ -234,15 +234,116 @@ cd open-skills
         </div>
       </div>
 
-      <!-- Skills Section -->
-      <div class="pt-32" id="skills">
-        <div class="flex items-end justify-between mb-8 border-b border-gray-200 pb-4">
-          <h2 class="text-2xl font-bold font-sans">Available Skills</h2>
-          <a href="https://github.com/besoeasy/open-skills/tree/main/skills" target="_blank" class="text-sm font-medium hover:underline">Browse all skills -></a>
+      <!-- How It Works - Network Visualization -->
+      <div class="pt-32 pb-20" id="how-it-works">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-5xl font-extrabold font-sans mb-6 tracking-tight text-black">
+            How it works.
+          </h2>
+          <p class="text-lg text-gray-500 max-w-2xl mx-auto font-sans leading-relaxed">
+            A self-improving ecosystem powered by AI agents and community contributions.
+          </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="app-grid">
-          <!-- Skills loaded via JS -->
+        <!-- Network Diagram Container -->
+        <div class="relative w-full max-w-5xl mx-auto h-[500px] bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-200 overflow-hidden">
+          <!-- Animated background grid -->
+          <div class="absolute inset-0 opacity-30">
+            <div class="absolute inset-0" style="background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px); background-size: 30px 30px;"></div>
+          </div>
+
+          <!-- SVG Network -->
+          <svg class="absolute inset-0 w-full h-full" id="network-svg">
+            <!-- Connection lines (will be animated) -->
+            <g id="connections" stroke="#d1d5db" stroke-width="2" fill="none" opacity="0.5">
+              <!-- Lines will be drawn by JS -->
+            </g>
+
+            <!-- Animated particles -->
+            <g id="particles">
+              <!-- Particles will be animated by JS -->
+            </g>
+          </svg>
+
+          <!-- Network Nodes -->
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="relative w-full h-full max-w-4xl">
+
+              <!-- Center: Open Skills -->
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+                <div class="group relative">
+                  <div class="absolute -inset-4 bg-black rounded-full blur-xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                  <div class="relative bg-black text-white px-8 py-6 rounded-2xl font-bold text-lg font-mono shadow-2xl border-4 border-white">
+                    OPEN-SKILLS
+                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Top Left: AI Agent -->
+              <div class="absolute top-12 left-12 network-node" data-node="1">
+                <div class="bg-white border-2 border-gray-300 px-4 py-3 rounded-xl font-semibold text-sm font-mono shadow-lg hover:border-black hover:shadow-xl transition-all hover:-translate-y-1">
+                  🤖 AI Agent
+                </div>
+              </div>
+
+              <!-- Top Right: Check for Skill -->
+              <div class="absolute top-12 right-12 network-node" data-node="2">
+                <div class="bg-white border-2 border-gray-300 px-4 py-3 rounded-xl font-semibold text-sm font-mono shadow-lg hover:border-black hover:shadow-xl transition-all hover:-translate-y-1">
+                  🔍 Check Skills
+                </div>
+              </div>
+
+              <!-- Middle Left: Use Working Code -->
+              <div class="absolute top-1/2 left-8 -translate-y-1/2 network-node" data-node="3">
+                <div class="bg-white border-2 border-gray-300 px-4 py-3 rounded-xl font-semibold text-sm font-mono shadow-lg hover:border-black hover:shadow-xl transition-all hover:-translate-y-1">
+                  ⚡ Execute Skill
+                </div>
+              </div>
+
+              <!-- Middle Right: Success -->
+              <div class="absolute top-1/2 right-8 -translate-y-1/2 network-node" data-node="4">
+                <div class="bg-white border-2 border-green-300 px-4 py-3 rounded-xl font-semibold text-sm font-mono shadow-lg hover:border-green-500 hover:shadow-xl transition-all hover:-translate-y-1">
+                  ✅ Success (10s)
+                </div>
+              </div>
+
+              <!-- Bottom Left: Create New Skill -->
+              <div class="absolute bottom-12 left-16 network-node" data-node="5">
+                <div class="bg-white border-2 border-gray-300 px-4 py-3 rounded-xl font-semibold text-sm font-mono shadow-lg hover:border-black hover:shadow-xl transition-all hover:-translate-y-1">
+                  💡 Create Skill
+                </div>
+              </div>
+
+              <!-- Bottom Right: Auto PR -->
+              <div class="absolute bottom-12 right-16 network-node" data-node="6">
+                <div class="bg-white border-2 border-purple-300 px-4 py-3 rounded-xl font-semibold text-sm font-mono shadow-lg hover:border-purple-500 hover:shadow-xl transition-all hover:-translate-y-1">
+                  🔄 Auto PR
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Floating info cards -->
+          <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm border border-gray-200 px-4 py-2 rounded-lg text-xs font-mono text-gray-600 shadow-lg">
+            <span class="text-black font-bold">Traditional:</span> 2-3 min, 50k tokens
+          </div>
+          <div class="absolute bottom-4 right-4 bg-green-50/90 backdrop-blur-sm border border-green-200 px-4 py-2 rounded-lg text-xs font-mono text-gray-600 shadow-lg">
+            <span class="text-green-700 font-bold">With Skills:</span> 10 sec, 1k tokens
+          </div>
+
+        </div>
+
+        <!-- Browse Skills CTA -->
+        <div class="text-center mt-12">
+          <a href="https://github.com/besoeasy/open-skills/tree/main/skills" target="_blank"
+             class="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors shadow-lg">
+            Browse All Skills
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </a>
         </div>
       </div>
 
@@ -301,34 +402,6 @@ cd open-skills
           manualContent.classList.remove("hidden");
           promptContent.classList.add("hidden");
         }
-      }
-
-      async function loadApps() {
-        // Simplified - just show some placeholder skills
-        // In a real implementation, you'd fetch from a skills.json file
-        const grid = document.getElementById("app-grid");
-        grid.innerHTML = `
-          <div class="border border-gray-200 bg-white p-5 transition-colors duration-300">
-            <h3 class="font-bold text-sm mb-3 font-mono">Check Crypto Balance</h3>
-            <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed font-sans mb-3">Check Bitcoin, Ethereum, and other crypto address balances using free public APIs</p>
-            <span class="text-[10px] uppercase tracking-wider text-gray-400 border border-gray-100 px-1.5 py-0.5 rounded">CRYPTO</span>
-          </div>
-          <div class="border border-gray-200 bg-white p-5 transition-colors duration-300">
-            <h3 class="font-bold text-sm mb-3 font-mono">Web Search API</h3>
-            <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed font-sans mb-3">Use free SearXNG instances for web search - no API keys, no rate limits</p>
-            <span class="text-[10px] uppercase tracking-wider text-gray-400 border border-gray-100 px-1.5 py-0.5 rounded">SEARCH</span>
-          </div>
-          <div class="border border-gray-200 bg-white p-5 transition-colors duration-300">
-            <h3 class="font-bold text-sm mb-3 font-mono">Merge PDFs</h3>
-            <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed font-sans mb-3">Combine multiple PDF files into one using PyPDF2 or pdftk</p>
-            <span class="text-[10px] uppercase tracking-wider text-gray-400 border border-gray-100 px-1.5 py-0.5 rounded">UTILITY</span>
-          </div>
-          <div class="border border-gray-200 bg-white p-5 transition-colors duration-300">
-            <h3 class="font-bold text-sm mb-3 font-mono">Trading Indicators</h3>
-            <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed font-sans mb-3">Calculate RSI, MACD, Bollinger Bands, and 20+ indicators from OHLCV data</p>
-            <span class="text-[10px] uppercase tracking-wider text-gray-400 border border-gray-100 px-1.5 py-0.5 rounded">FINANCE</span>
-          </div>
-        `;
       }
 
       async function loadStars() {
@@ -613,12 +686,104 @@ cd open-skills
         // Disabled - no app logos to animate
       }
 
+      // Network visualization
+      function initNetworkVisualization() {
+        const svg = document.getElementById('network-svg');
+        const connectionsGroup = document.getElementById('connections');
+        const particlesGroup = document.getElementById('particles');
+
+        if (!svg || !connectionsGroup || !particlesGroup) return;
+
+        // Get center position
+        const rect = svg.getBoundingClientRect();
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        // Node positions relative to center (approximate)
+        const nodes = [
+          { x: rect.width * 0.15, y: rect.height * 0.15 }, // Top left - AI Agent
+          { x: rect.width * 0.85, y: rect.height * 0.15 }, // Top right - Check Skills
+          { x: rect.width * 0.1, y: rect.height * 0.5 },   // Middle left - Execute
+          { x: rect.width * 0.9, y: rect.height * 0.5 },   // Middle right - Success
+          { x: rect.width * 0.2, y: rect.height * 0.85 },  // Bottom left - Create
+          { x: rect.width * 0.8, y: rect.height * 0.85 },  // Bottom right - Auto PR
+        ];
+
+        // Draw connections to center
+        nodes.forEach((node, i) => {
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', node.x);
+          line.setAttribute('y1', node.y);
+          line.setAttribute('x2', centerX);
+          line.setAttribute('y2', centerY);
+          line.setAttribute('stroke-dasharray', '5,5');
+
+          // Animate line appearance
+          line.style.opacity = '0';
+          setTimeout(() => {
+            line.style.transition = 'opacity 1s ease-in-out';
+            line.style.opacity = '0.5';
+          }, i * 100);
+
+          connectionsGroup.appendChild(line);
+        });
+
+        // Create animated particles
+        function createParticle() {
+          const nodeIndex = Math.floor(Math.random() * nodes.length);
+          const node = nodes[nodeIndex];
+
+          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('r', '4');
+          circle.setAttribute('fill', nodeIndex === 3 ? '#10b981' : nodeIndex === 5 ? '#a855f7' : '#000000');
+          circle.setAttribute('opacity', '0.8');
+
+          // Animate from node to center
+          const duration = 2000 + Math.random() * 1000;
+          const startTime = Date.now();
+
+          function animate() {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Easing function
+            const easeProgress = progress < 0.5
+              ? 2 * progress * progress
+              : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+            const x = node.x + (centerX - node.x) * easeProgress;
+            const y = node.y + (centerY - node.y) * easeProgress;
+
+            circle.setAttribute('cx', x);
+            circle.setAttribute('cy', y);
+            circle.setAttribute('opacity', 0.8 * (1 - progress));
+
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            } else {
+              circle.remove();
+            }
+          }
+
+          particlesGroup.appendChild(circle);
+          animate();
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 800);
+
+        // Initial burst
+        for (let i = 0; i < 6; i++) {
+          setTimeout(createParticle, i * 200);
+        }
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
-        loadApps();
         loadStars();
         animateFeatures();
         initScrollAnimations();
         initHeroRotator();
+        initNetworkVisualization();
         loadRandomScreenshot();
         initHeroAnimation();
         

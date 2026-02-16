@@ -21,7 +21,6 @@ Less trial-and-error, fewer wasted tokens, faster reliable execution.
 - [Browse Skills](skills/)
 - [Contributing Guide](CONTRIBUTING.md)
 - [Skill Template](SKILL_TEMPLATE.md)
-- [Website](https://skills.besoeasy.com/)
 
 ## Quick Start (Copy/Paste)
 

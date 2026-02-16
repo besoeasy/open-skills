@@ -4,6 +4,10 @@
 
 ### Teach your AI agent must-have skills and save ~98% of API calls.
 
+[**MAIN INSTALLATION: USE THE WEBSITE QUICK START**](https://openskills.besoeasy.com/)
+
+[![Use Open Skills Now](https://img.shields.io/badge/USE%20NOW-openskills.besoeasy.com-black?style=for-the-badge)](https://openskills.besoeasy.com/)
+
 [![MIT License](https://img.shields.io/badge/license-MIT-black.svg)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-production--ready-black.svg)](skills/)
 [![Contributions](https://img.shields.io/badge/contributions-agent--friendly-black.svg)](CONTRIBUTING.md)

@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Open Skills — AI Agent Skills Library</title>
+    <meta
+      name="description"
+      content="Teach your AI Agent must-have skills. Save 98% of API calls with battle-tested, ready-to-use skills that work the first time."
+    />
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://skills.besoeasy.com/" />
+    <meta property="og:title" content="Open Skills — AI Agent Skills Library" />
+    <meta
+      property="og:description"
+      content="Teach your AI Agent must-have skills. Save 98% of API calls with battle-tested, ready-to-use skills that work the first time."
+    />
+    <meta property="og:image" content="https://skills.besoeasy.com/og-image.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://skills.besoeasy.com/" />
+    <meta property="twitter:title" content="Open Skills — AI Agent Skills Library" />
+    <meta
+      property="twitter:description"
+      content="Teach your AI Agent must-have skills. Save 98% of API calls with battle-tested, ready-to-use skills that work the first time."
+    />
+    <meta property="twitter:image" content="https://skills.besoeasy.com/og-image.png" />
+
+    <!-- Local Tailwind CSS bundle -->
+    <link rel="stylesheet" href="./tailwind.css" />
+    <style>
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .bg-grid-pattern {
+        background-color: #ffffff;
+        background-image: linear-gradient(#f1f5f9 1px, transparent 1px), linear-gradient(90deg, #f1f5f9 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+      @keyframes twinkle {
+        0%, 100% { opacity: 0.1; transform: scale(0.8); }
+        50% { opacity: 0.4; transform: scale(1.1); }
+      }
+      .star-icon {
+        position: absolute;
+        animation: twinkle 4s infinite ease-in-out;
+        opacity: 0.1;
+        filter: grayscale(100%);
+        transition: all 0.3s;
+        pointer-events: auto; /* Enable hover */
+      }
+      .star-icon:hover {
+        opacity: 1 !important;
+        filter: grayscale(0%);
+        transform: scale(1.1) !important; /* Temporarily pause animation or override transform */
+        z-index: 20;
+        animation-play-state: paused;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+        opacity: 0; /* Start hidden */
+      }
+      .delay-100 { animation-delay: 100ms; }
+      .delay-200 { animation-delay: 200ms; }
+      .delay-300 { animation-delay: 300ms; }
+    </style>
+  </head>
+  <body class="bg-white text-black font-mono antialiased selection:bg-black selection:text-white relative">
+    <div class="absolute inset-0 -z-10 bg-grid-pattern [mask-image:linear-gradient(to_bottom,white,transparent)] h-[900px] pointer-events-none"></div>
+    
+    <!-- Hero Background Animation Container -->
+    <div id="hero-stars" class="absolute top-0 left-0 w-full h-[1000px] overflow-hidden -z-10 [mask-image:linear-gradient(to_bottom,black_20%,transparent)] pointer-events-none"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass-effect border-b border-gray-100/50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+          <a href="#" class="text-xl font-bold tracking-tight bg-black text-white px-2 py-1">OPEN-SKILLS</a>
+          <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
+            <a href="#features" class="hover:text-black transition-colors">Benefits</a>
+            <a href="#skills" class="hover:text-black transition-colors">Skills</a>
+          </nav>
+        </div>
+        <div class="flex items-center gap-4">
+          <a
+            href="https://github.com/besoeasy/open-skills"
+            target="_blank"
+            class="hidden sm:flex items-center gap-2 bg-black text-white px-4 py-2 text-sm font-bold hover:bg-gray-800 transition-colors"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill-rule="evenodd"
+                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Star on GitHub <span class="text-gray-400 font-normal" id="stars-nav"></span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-24">
+      <!-- Badge -->
+      <div class="mb-8 animate-fade-in-up">
+        <a
+          href="https://github.com/besoeasy/open-skills"
+          target="_blank"
+          class="inline-flex items-center gap-3 text-sm text-gray-600 hover:text-black transition-colors group"
+        >
+          <span class="bg-black text-white text-xs px-1.5 py-0.5 font-bold uppercase">Open Source</span>
+          <span class="border-b border-transparent group-hover:border-gray-300">Battle-tested skills for AI agents. Save 98% of API calls.</span>
+          <span class="text-gray-400 group-hover:translate-x-0.5 transition-transform">&rarr;</span>
+        </a>
+      </div>
+
+      <!-- Hero -->
+      <div class="mb-32 flex flex-col items-center text-center relative z-10">
+        <div class="max-w-4xl mx-auto">
+          <h1
+            id="hero-title"
+            class="text-6xl sm:text-7xl font-bold tracking-tight mb-8 font-sans text-black leading-none transition-opacity duration-500 ease-in-out animate-fade-in-up delay-100"
+          >
+            Teach your AI Agent<br />must-have skills.
+          </h1>
+          <p id="hero-desc" class="text-xl text-gray-500 leading-relaxed max-w-2xl mx-auto mb-12 font-sans transition-opacity duration-500 ease-in-out animate-fade-in-up delay-200">
+            Stop wasting tokens on trial and error. Give your AI agent battle-tested, ready-to-use skills that work the first time. Save 98% of API calls with proven patterns.
+          </p>
+
+          <!-- Install Widget -->
+          <div class="border border-gray-200 rounded-xl overflow-hidden shadow-2xl bg-white max-w-2xl mx-auto text-left ring-1 ring-gray-900/5 animate-fade-in-up delay-300">
+            <div class="flex border-b border-gray-100 bg-gray-50/50 p-1">
+              <button
+                id="tab-prompt"
+                onclick="switchInstallTab('prompt')"
+                class="px-4 py-2 text-sm font-semibold rounded-lg bg-white shadow-sm text-black border border-gray-200"
+              >
+                Quick Start
+              </button>
+              <button
+                id="tab-manual"
+                onclick="switchInstallTab('manual')"
+                class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-black transition-colors"
+              >
+                Manual Setup
+              </button>
+            </div>
+            <div id="content-prompt" class="p-5 bg-[#18181b] flex items-start justify-between group">
+              <code class="text-xs sm:text-sm text-gray-300 font-mono overflow-x-auto whitespace-pre hide-scrollbar pr-4 leading-relaxed"
+                >Clone besoeasy/open-skills → ~/open-skills; update weekly (git pull).
+For every task, check open-skills first.
+If skill exists → use it.
+If not → create a reusable skill.
+New skills must match the existing format (study 3 random skills first).
+Auto fork → commit → push → PR via gh (no manual steps).</code
+              >
+              <button
+                onclick="
+                  navigator.clipboard.writeText(
+                    'Clone besoeasy/open-skills → ~/open-skills; update weekly (git pull).\\nFor every task, check open-skills first.\\nIf skill exists → use it.\\nIf not → create a reusable skill.\\nNew skills must match the existing format (study 3 random skills first).\\nAuto fork → commit → push → PR via gh (no manual steps).',
+                  )
+                "
+                class="text-gray-500 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10"
+                title="Copy prompt"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <div id="content-manual" class="p-5 bg-[#18181b] flex items-start justify-between group hidden">
+              <code class="text-sm text-gray-300 font-mono overflow-x-auto whitespace-pre hide-scrollbar pr-4 leading-relaxed">
+cd ~ && git clone https://github.com/besoeasy/open-skills
+cd open-skills
+# Browse the skills/ directory to find what you need
+              </code>
+              <button
+                onclick="
+                  navigator.clipboard.writeText(
+                    'cd ~ && git clone https://github.com/besoeasy/open-skills\\ncd open-skills\\n# Browse the skills/ directory to find what you need',
+                  )
+                "
+                class="text-gray-500 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10"
+                title="Copy command"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Why Open Skills Section (Features in list style) -->
+      <div class="max-w-4xl pt-12" id="features">
+        <h2 class="text-2xl font-bold font-sans mb-6">Why Open Skills?</h2>
+        <p class="text-gray-600 mb-10 max-w-2xl font-sans">
+          AI agents waste enormous amounts of compute reinventing the wheel. Give them battle-tested patterns that work the first time.
+        </p>
+
+        <div class="space-y-6 font-mono text-sm sm:text-base" id="features-list">
+          <!-- Features loaded via JS -->
+        </div>
+      </div>
+
+      <!-- Skills Section -->
+      <div class="pt-32" id="skills">
+        <div class="flex items-end justify-between mb-8 border-b border-gray-200 pb-4">
+          <h2 class="text-2xl font-bold font-sans">Available Skills</h2>
+          <a href="https://github.com/besoeasy/open-skills/tree/main/skills" target="_blank" class="text-sm font-medium hover:underline">Browse all skills -></a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="app-grid">
+          <!-- Skills loaded via JS -->
+        </div>
+      </div>
+
+      <!-- Detailed Features Grid -->
+      <div class="pt-32 pb-20" id="detailed-features">
+        <div class="text-center mb-16 opacity-0 translate-y-4 transition-all duration-700" id="features-header">
+          <h2 class="text-3xl md:text-5xl font-extrabold font-sans mb-6 tracking-tight text-black">
+            Stop wasting tokens. <br /><span class="text-gray-400">Start using skills.</span>
+          </h2>
+          <p class="text-lg text-gray-500 max-w-2xl mx-auto font-sans leading-relaxed">
+            Pre-written, tested, copy-paste skills that AI agents can use immediately. No debugging needed.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="features-grid-container">
+          <!-- Cards injected via JS -->
+        </div>
+      </div>
+
+      <!-- Screenshot Section - Remove Yantra branding -->
+      <div class="py-20 border-t border-gray-100 hidden" id="screenshots">
+        <!-- Hidden for now since we don't have screenshots yet -->
+      </div>
+    </main>
+
+    <!-- Simple Footer -->
+    <footer class="border-t border-gray-200 py-12 bg-gray-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-6 text-sm text-gray-500">
+        <div><span class="font-bold text-black">OPEN-SKILLS</span> &copy; 2026</div>
+        <div class="flex gap-6">
+          <a href="https://github.com/besoeasy/open-skills" class="hover:text-black">GitHub</a>
+          <a href="mailto:contact@besoeasy.com" class="hover:text-black">Contact</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function switchInstallTab(tab) {
+        // Update button styles
+        const promptTab = document.getElementById("tab-prompt");
+        const manualTab = document.getElementById("tab-manual");
+        const promptContent = document.getElementById("content-prompt");
+        const manualContent = document.getElementById("content-manual");
+
+        const activeClass = "px-4 py-2 text-sm font-semibold rounded-lg bg-white shadow-sm text-black border border-gray-200";
+        const inactiveClass = "px-4 py-2 text-sm font-medium text-gray-500 hover:text-black transition-colors";
+
+        if (tab === "prompt") {
+          promptTab.className = activeClass;
+          manualTab.className = inactiveClass;
+          promptContent.classList.remove("hidden");
+          manualContent.classList.add("hidden");
+        } else {
+          manualTab.className = activeClass;
+          promptTab.className = inactiveClass;
+          manualContent.classList.remove("hidden");
+          promptContent.classList.add("hidden");
+        }
+      }
+
+      async function loadApps() {
+        // Simplified - just show some placeholder skills
+        // In a real implementation, you'd fetch from a skills.json file
+        const grid = document.getElementById("app-grid");
+        grid.innerHTML = `
+          <div class="border border-gray-200 bg-white p-5 transition-colors duration-300">
+            <h3 class="font-bold text-sm mb-3 font-mono">Check Crypto Balance</h3>
+            <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed font-sans mb-3">Check Bitcoin, Ethereum, and other crypto address balances using free public APIs</p>
+            <span class="text-[10px] uppercase tracking-wider text-gray-400 border border-gray-100 px-1.5 py-0.5 rounded">CRYPTO</span>
+          </div>
+          <div class="border border-gray-200 bg-white p-5 transition-colors duration-300">
+            <h3 class="font-bold text-sm mb-3 font-mono">Web Search API</h3>
+            <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed font-sans mb-3">Use free SearXNG instances for web search - no API keys, no rate limits</p>
+            <span class="text-[10px] uppercase tracking-wider text-gray-400 border border-gray-100 px-1.5 py-0.5 rounded">SEARCH</span>
+          </div>
+          <div class="border border-gray-200 bg-white p-5 transition-colors duration-300">
+            <h3 class="font-bold text-sm mb-3 font-mono">Merge PDFs</h3>
+            <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed font-sans mb-3">Combine multiple PDF files into one using PyPDF2 or pdftk</p>
+            <span class="text-[10px] uppercase tracking-wider text-gray-400 border border-gray-100 px-1.5 py-0.5 rounded">UTILITY</span>
+          </div>
+          <div class="border border-gray-200 bg-white p-5 transition-colors duration-300">
+            <h3 class="font-bold text-sm mb-3 font-mono">Trading Indicators</h3>
+            <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed font-sans mb-3">Calculate RSI, MACD, Bollinger Bands, and 20+ indicators from OHLCV data</p>
+            <span class="text-[10px] uppercase tracking-wider text-gray-400 border border-gray-100 px-1.5 py-0.5 rounded">FINANCE</span>
+          </div>
+        `;
+      }
+
+      async function loadStars() {
+        try {
+          const response = await fetch("https://api.github.com/repos/besoeasy/open-skills");
+          if (response.ok) {
+            const data = await response.json();
+            const stars = data.stargazers_count;
+            const formatted = stars > 1000 ? (stars / 1000).toFixed(1) + "k" : stars;
+            document.getElementById("stars-nav").textContent = formatted;
+          }
+        } catch (e) {
+          document.getElementById("stars-nav").textContent = "";
+        }
+      }
+
+      function animateFeatures() {
+        const allFeatures = [
+          {
+            title: "98% Fewer API Calls",
+            description: "Agent uses working code instead of experimenting with different approaches.",
+          },
+          {
+            title: "10-50x Faster Execution",
+            description: "No trial-and-error loops. Skills work the first time.",
+          },
+          {
+            title: "Privacy-First Tools",
+            description: "Free public APIs and open-source tools. No API keys for most skills.",
+          },
+          {
+            title: "Agent-Optimized Prompts",
+            description: "Structured for direct consumption by LLMs with clear examples.",
+          },
+          {
+            title: "Zero Search API Costs",
+            description: "Use free SearXNG instances instead of paying for Brave Search or Google API.",
+          },
+          {
+            title: "Working Code Examples",
+            description: "Node.js and Bash examples that are production-ready, not theoretical.",
+          },
+          {
+            title: "Real-World Tested",
+            description: "Every skill is battle-tested in production environments.",
+          },
+          {
+            title: "Auto-Contribution Flow",
+            description: "Agents can auto-fork, commit, and PR new skills via GitHub CLI.",
+          },
+          {
+            title: "Self-Improving Ecosystem",
+            description: "Community skills flow back into the repository automatically.",
+          },
+          {
+            title: "Public Credit",
+            description: "Contributors get GitHub commit history and recognition.",
+          },
+          {
+            title: "Fast Response Time",
+            description: "10 seconds vs 2-3 minutes compared to trial-and-error.",
+          },
+          {
+            title: "Higher Success Rate",
+            description: "Proven patterns that work reliably every time.",
+          },
+          {
+            title: "No Vendor Lock-in",
+            description: "MIT licensed, copy and paste skills into any agent.",
+          },
+          {
+            title: "Massive Cost Savings",
+            description: "Save $240-$1,470/month for teams running 1,000+ agent tasks.",
+          },
+          {
+            title: "Token Budget Friendly",
+            description: "1,000 tokens per task vs 50,000+ tokens without skills.",
+          },
+        ];
+
+        const featuresList = document.getElementById("features-list");
+
+        // Helper to create feature element
+        const createFeature = (feature) => {
+          const div = document.createElement("div");
+          div.className = "flex gap-4 items-start opacity-0 -translate-y-4 transition-all duration-1000 feature-item";
+          div.innerHTML = `
+                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
+                    <div>
+                        <span class="font-bold text-black mr-2">${feature.title}</span>
+                        <span class="text-gray-600">${feature.description}</span>
+                    </div>
+                `;
+
+          // Trigger animation
+          requestAnimationFrame(() => {
+            div.classList.remove("opacity-0", "-translate-y-4");
+          });
+
+          return div;
+        };
+
+        // Initial load: 4 random features
+        const DISPLAY_COUNT = 4;
+        let currentFeatures = allFeatures.sort(() => 0.5 - Math.random()).slice(0, DISPLAY_COUNT);
+        currentFeatures.forEach((feature, index) => {
+          setTimeout(() => {
+            featuresList.appendChild(createFeature(feature));
+          }, index * 100); // Stagger initial load
+        });
+
+        // Periodic update
+        setInterval(() => {
+          if (document.hidden) return; // Pause if tab is hidden
+
+          // Pick a random feature
+          const randomFeature = allFeatures[Math.floor(Math.random() * allFeatures.length)];
+          const newFeature = createFeature(randomFeature);
+
+          // Add to front
+          featuresList.prepend(newFeature);
+
+          // Remove from back with slow fade
+          if (featuresList.children.length > DISPLAY_COUNT) {
+            const last = featuresList.lastElementChild;
+            last.style.transition = "all 2s ease-out";
+            last.classList.add("opacity-0", "scale-90");
+
+            // Wait for transition to finish before removing
+            setTimeout(() => last.remove(), 2000);
+          }
+        }, 4000); // Update every 4 seconds
+      }
+
+      function loadDetailedFeatures() {
+        const features = [
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>`,
+            title: "10-50x Faster",
+            desc: "Skip trial-and-error loops. Skills work the first time, delivering results in seconds instead of minutes.",
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+            title: "98% Cost Savings",
+            desc: "Reduce API calls from 20-50 per task to just 1-3. Save $240-$1,470/month for teams running 1,000+ tasks.",
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>`,
+            title: "Battle-Tested Code",
+            desc: "Production-ready examples in Node.js and Bash. No debugging needed—just copy and paste.",
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`,
+            title: "Privacy-First",
+            desc: "Free public APIs and open-source tools. No API keys required for most skills. Zero tracking.",
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>`,
+            title: "Free Web Search",
+            desc: "Eliminate $360-$8,000/year in search API costs. Use free SearXNG instances instead of Brave/Google APIs.",
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>`,
+            title: "Agent-Optimized",
+            desc: "Structured prompts designed for LLM consumption. Clear examples that agents understand immediately.",
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`,
+            title: "Self-Improving",
+            desc: "Agents can automatically contribute new skills via GitHub CLI. The ecosystem improves itself.",
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+            title: "Higher Success Rate",
+            desc: "Proven patterns that work reliably. No more debugging API responses or parsing errors.",
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>`,
+            title: "MIT Licensed",
+            desc: "Open-source and free to use. Copy skills into any agent runtime—no vendor lock-in.",
+          },
+        ];
+
+        const container = document.getElementById("features-grid-container");
+        if (!container) return;
+
+        features.forEach((feature, index) => {
+          const card = document.createElement("div");
+          card.className =
+            "group relative p-8 bg-white border border-gray-100 rounded-2xl hover:border-black transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 opacity-0 translate-y-8";
+          card.innerHTML = `
+                <div class="w-14 h-14 bg-gray-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-colors duration-500 group-hover:scale-110 transform">
+                    ${feature.icon}
+                </div>
+                <h3 class="text-xl font-bold font-sans mb-3 group-hover:text-black transition-colors">${feature.title}</h3>
+                <p class="text-sm text-gray-500 leading-relaxed font-sans group-hover:text-gray-700 transition-colors">${feature.desc}</p>
+                <!-- Decorative element -->
+                <div class="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </div>
+            `;
+          container.appendChild(card);
+
+          // Staggered Animation
+          setTimeout(() => {
+            requestAnimationFrame(() => {
+              card.classList.remove("opacity-0", "translate-y-8");
+            });
+          }, index * 100);
+        });
+      }
+
+      function initScrollAnimations() {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                if (entry.target.id === "detailed-features") {
+                  const header = document.getElementById("features-header");
+                  if (header) header.classList.remove("opacity-0", "translate-y-4");
+
+                  loadDetailedFeatures();
+                  observer.unobserve(entry.target);
+                }
+              }
+            });
+          },
+          { threshold: 0.1 },
+        );
+
+        const section = document.getElementById("detailed-features");
+        if (section) observer.observe(section);
+      }
+
+      function initHeroRotator() {
+        const messages = [
+          {
+            title: "Teach your AI Agent<br />must-have skills.",
+            desc: "Stop wasting tokens on trial and error. Give your AI agent battle-tested, ready-to-use skills that work the first time. Save 98% of API calls with proven patterns.",
+          },
+          {
+            title: "98% fewer API calls.<br />10-50x faster.",
+            desc: "Pre-written, tested skills eliminate trial-and-error. Agents execute in seconds instead of minutes, saving massive compute costs.",
+          },
+          {
+            title: "Stop paying for<br />search APIs.",
+            desc: "Eliminate $360-$8,000/year in costs. Use free SearXNG instances instead of Brave Search, Google, and Bing APIs.",
+          },
+          {
+            title: "Skills that work<br />the first time.",
+            desc: "Battle-tested Node.js and Bash examples. No debugging, no parsing errors, no wasted tokens.",
+          },
+        ];
+
+        let currentIndex = 0;
+        const titleEl = document.getElementById("hero-title");
+        const descEl = document.getElementById("hero-desc");
+
+        setInterval(() => {
+          // Fade out
+          titleEl.classList.add("opacity-0");
+          descEl.classList.add("opacity-0");
+
+          setTimeout(() => {
+            currentIndex = (currentIndex + 1) % messages.length;
+            titleEl.innerHTML = messages[currentIndex].title;
+            descEl.textContent = messages[currentIndex].desc;
+
+            // Fade in
+            titleEl.classList.remove("opacity-0");
+            descEl.classList.remove("opacity-0");
+          }, 500); // Wait for fade out
+        }, 5000); // Rotate every 5 seconds
+      }
+
+      // Simplified functions - remove screenshot and hero animation for now
+      function loadRandomScreenshot() {
+        // Disabled - no screenshots yet
+      }
+
+      async function initHeroAnimation() {
+        // Disabled - no app logos to animate
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadApps();
+        loadStars();
+        animateFeatures();
+        initScrollAnimations();
+        initHeroRotator();
+        loadRandomScreenshot();
+        initHeroAnimation();
+        
+        // Cleanup entrance animations on rotator elements to allow transitions to work later
+        setTimeout(() => {
+          const title = document.getElementById("hero-title");
+          const desc = document.getElementById("hero-desc");
+          if (title) {
+            title.classList.remove("animate-fade-in-up", "delay-100", "opacity-0");
+            title.style.opacity = ""; // Ensure it stays visible
+          } 
+          if (desc) {
+            desc.classList.remove("animate-fade-in-up", "delay-200", "opacity-0");
+            desc.style.opacity = "";
+          }
+        }, 1500);
+      });
+    </script>
+  </body>
+</html>

@@ -150,7 +150,7 @@
             Start working with AI agents<br />in 60 seconds.
           </h1>
           <p id="hero-desc" class="text-xl text-gray-500 leading-relaxed max-w-2xl mx-auto mb-12 font-sans transition-opacity duration-500 ease-in-out animate-fade-in-up delay-200">
-            Copy the instruction below and send it to your AI agent as the first message. This activates the Open Skills workflow so your agent can find, use, and contribute skills automatically.
+            Send this to your agent and it will do everything automatically. If you prefer, you can read the file and copy/paste manually.
           </p>
 
           <div class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold tracking-wide text-black bg-gray-100 border border-gray-200 rounded-full px-4 py-2 mb-6">
@@ -161,22 +161,16 @@
           <div class="border border-gray-200 rounded-xl overflow-hidden shadow-2xl bg-white max-w-2xl mx-auto text-left ring-1 ring-gray-900/5 animate-fade-in-up delay-300">
             <div class="p-5 bg-[#18181b] flex items-start justify-between group">
               <code class="text-xs sm:text-sm text-gray-300 font-mono overflow-x-auto whitespace-pre hide-scrollbar pr-4 leading-relaxed"
-                >
-Clone besoeasy/open-skills → ~/open-skills; update weekly (git pull).
-For every task, check open-skills first.
-If skill exists → use it.
-If not → create a reusable skill.
-New skills must match the existing format (study 3 random skills first).
-Auto fork → commit → push → PR via gh (no manual steps).</code
+                >curl -S https://openskills.besoeasy.com/skill.txt</code
               >
               <button
                 onclick="
                   navigator.clipboard.writeText(
-                    '\\nClone besoeasy/open-skills → ~/open-skills; update weekly (git pull).\\nFor every task, check open-skills first.\\nIf skill exists → use it.\\nIf not → create a reusable skill.\\nNew skills must match the existing format (study 3 random skills first).\\nAuto fork → commit → push → PR via gh (no manual steps).',
+                    'curl -S https://openskills.besoeasy.com/skill.txt',
                   )
                 "
                 class="text-gray-500 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10"
-                title="Copy prompt"
+                title="Copy command"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -189,6 +183,11 @@ Auto fork → commit → push → PR via gh (no manual steps).</code
               </button>
             </div>
           </div>
+
+          <p class="mt-3 text-xs sm:text-sm text-gray-500 font-sans animate-pulse">
+            🤖 Send this to your agent and it will do everything automatically.<br />
+            🔍 If you want, read the file and copy/paste manually if you're paranoid.
+          </p>
         </div>
 
       </div>

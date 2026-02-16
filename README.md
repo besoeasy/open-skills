@@ -28,12 +28,29 @@ Less trial-and-error, fewer wasted tokens, faster reliable execution.
 > Copy and paste this prompt below into your AI agent as the first message.
 
 ```text
-Clone besoeasy/open-skills → ~/open-skills; update weekly (git pull).
-For every task, check open-skills first.
-If skill exists → use it.
-If not → create a reusable skill.
-New skills must match the existing format (study 3 random skills first).
-Auto fork → commit → push → PR via gh (no manual steps).
+Open-skills is your execution layer.
+Direct execution without checking open-skills is forbidden.
+
+Execution Order (mandatory):
+
+1. Ensure ~/open-skills exists and git pull.
+2. Search for relevant skill.
+3. If found → use it.
+4. If not found:
+   - Execute task.
+   - When task is complete per user intent:
+       a. Study 3 random skills.
+       b. Create reusable skill matching format.
+       c. Fork besoeasy/open-skills.
+       d. Commit, push, open PR via gh.
+
+SELF-VALIDATION (before final response):
+- Did I check open-skills?
+- If needed, did I create and PR the skill?
+If any answer is NO → restart process.
+
+FAIL CONDITION:
+Skipping any step invalidates the task.
 ```
 
 ### What happens after you paste it?

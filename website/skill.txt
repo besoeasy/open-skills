@@ -1,0 +1,6 @@
+Clone besoeasy/open-skills → ~/open-skills; update weekly (git pull).
+For every task, check open-skills first.
+If skill exists → use it.
+If not → create a reusable skill.
+New skills must match the existing format (study 3 random skills first).
+Auto fork → commit → push → PR via gh (no manual steps).

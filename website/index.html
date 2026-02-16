@@ -592,21 +592,21 @@
     </footer>
 
     <script>
-      let skillContentText = "curl -S https://openopenskills.besoeasy.com/skill.txt";
+      let skillContentText = "curl -S https://penskills.besoeasy.com/skill.txt";
 
       async function loadSkillContent() {
         const skillContentEl = document.getElementById("skill-content");
         if (!skillContentEl) return;
 
         try {
-          const response = await fetch("https://openopenskills.besoeasy.com/skill.txt");
+          const response = await fetch("https://openskills.besoeasy.com/skill.txt");
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
           const text = await response.text();
           skillContentText = text.trim() || skillContentText;
           skillContentEl.textContent = skillContentText;
         } catch (error) {
-          skillContentEl.textContent = "Failed to load skill.txt. Run: curl -S https://openopenskills.besoeasy.com/skill.txt";
+          skillContentEl.textContent = "Failed to load skill.txt. Run: curl -S https://openskills.besoeasy.com/skill.txt";
         }
       }
 

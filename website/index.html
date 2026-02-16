@@ -171,27 +171,38 @@
 
           <!-- Install Widget -->
           <div class="border border-gray-200 rounded-xl overflow-hidden shadow-2xl bg-white max-w-2xl mx-auto text-left ring-1 ring-gray-900/5 animate-fade-in-up delay-300">
-            <div class="p-5 bg-[#18181b] flex items-start justify-between group">
+            <div class="p-5 bg-[#18181b] flex items-start justify-between gap-3 group">
               <code
                 id="skill-content"
-                class="text-xs sm:text-sm text-gray-300 font-mono overflow-x-auto whitespace-pre hide-scrollbar pr-4 leading-relaxed"
+                class="block text-xs sm:text-sm text-gray-300 font-mono overflow-x-auto overflow-y-hidden whitespace-pre hide-scrollbar pr-2 leading-relaxed transition-[max-height] duration-300 max-h-16"
                 >Loading skill.txt...</code
               >
-              <button
-                id="copy-skill-btn"
-                onclick="copySkillContent()"
-                class="text-gray-500 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10"
-                title="Copy skill text"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  ></path>
-                </svg>
-              </button>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button
+                  id="toggle-skill-btn"
+                  onclick="toggleSkillContent()"
+                  class="text-gray-400 hover:text-white transition-colors px-2 py-1 text-xs font-bold rounded hover:bg-white/10"
+                  title="Expand code block"
+                  aria-expanded="false"
+                >
+                  Expand
+                </button>
+                <button
+                  id="copy-skill-btn"
+                  onclick="copySkillContent()"
+                  class="text-gray-500 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10"
+                  title="Copy skill text"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -593,6 +604,36 @@
 
     <script>
       let skillContentText = "curl -S https://penskills.besoeasy.com/skill.txt";
+      let isSkillCollapsed = true;
+
+      function updateSkillContentVisibility() {
+        const skillContentEl = document.getElementById("skill-content");
+        const toggleBtn = document.getElementById("toggle-skill-btn");
+        if (!skillContentEl || !toggleBtn) return;
+
+        if (isSkillCollapsed) {
+          skillContentEl.classList.add("max-h-16");
+          skillContentEl.classList.remove("max-h-96");
+          skillContentEl.classList.add("overflow-y-hidden");
+          skillContentEl.classList.remove("overflow-y-auto");
+          toggleBtn.textContent = "Expand";
+          toggleBtn.title = "Expand code block";
+          toggleBtn.setAttribute("aria-expanded", "false");
+        } else {
+          skillContentEl.classList.remove("max-h-16");
+          skillContentEl.classList.add("max-h-96");
+          skillContentEl.classList.remove("overflow-y-hidden");
+          skillContentEl.classList.add("overflow-y-auto");
+          toggleBtn.textContent = "Collapse";
+          toggleBtn.title = "Collapse code block";
+          toggleBtn.setAttribute("aria-expanded", "true");
+        }
+      }
+
+      function toggleSkillContent() {
+        isSkillCollapsed = !isSkillCollapsed;
+        updateSkillContentVisibility();
+      }
 
       async function loadSkillContent() {
         const skillContentEl = document.getElementById("skill-content");
@@ -608,6 +649,8 @@
         } catch (error) {
           skillContentEl.textContent = "Failed to load skill.txt. Run: curl -S https://openskills.besoeasy.com/skill.txt";
         }
+
+        updateSkillContentVisibility();
       }
 
       function copySkillContent() {

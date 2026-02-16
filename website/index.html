@@ -371,9 +371,10 @@
           <article class="border border-gray-200 rounded-2xl p-6 bg-white">
             <div class="text-xs font-bold tracking-wide text-gray-500 mb-3">EXAMPLE 1</div>
             <h3 class="text-xl font-bold font-sans mb-3 text-black">Bitcoin Address Balance</h3>
-            <p class="text-sm text-gray-600 font-sans mb-4 leading-relaxed">
-              Without skills, agents test multiple APIs and parsing approaches. With Open Skills, they use a proven balance endpoint and return BTC immediately.
-            </p>
+            <div class="text-sm text-gray-600 font-sans mb-4 leading-relaxed space-y-2">
+              <p><span class="font-bold text-black">Without open-skills:</span> Agent tries multiple APIs/endpoints and spends time debugging parsing and conversions.</p>
+              <p><span class="font-bold text-black">With open-skills:</span> Agent uses a proven balance workflow and returns BTC immediately.</p>
+            </div>
             <div class="text-sm font-mono text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
               Result: ~10 seconds, ~1k tokens
             </div>
@@ -382,9 +383,10 @@
           <article class="border border-gray-200 rounded-2xl p-6 bg-white">
             <div class="text-xs font-bold tracking-wide text-gray-500 mb-3">EXAMPLE 2</div>
             <h3 class="text-xl font-bold font-sans mb-3 text-black">Web Search Without API Cost</h3>
-            <p class="text-sm text-gray-600 font-sans mb-4 leading-relaxed">
-              Instead of paid Google/Brave/Bing APIs, the agent uses the SearXNG workflow to run privacy-respecting searches with no API key.
-            </p>
+            <div class="text-sm text-gray-600 font-sans mb-4 leading-relaxed space-y-2">
+              <p><span class="font-bold text-black">Without open-skills:</span> Agent defaults to paid Google/Brave/Bing search APIs and extra integration overhead.</p>
+              <p><span class="font-bold text-black">With open-skills:</span> Agent runs the SearXNG workflow for privacy-respecting search with no API key.</p>
+            </div>
             <div class="text-sm font-mono text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
               Result: $0 search cost, unlimited queries
             </div>
@@ -393,9 +395,10 @@
           <article class="border border-gray-200 rounded-2xl p-6 bg-white">
             <div class="text-xs font-bold tracking-wide text-gray-500 mb-3">EXAMPLE 3</div>
             <h3 class="text-xl font-bold font-sans mb-3 text-black">Trading Indicators from OHLCV</h3>
-            <p class="text-sm text-gray-600 font-sans mb-4 leading-relaxed">
-              Instead of rebuilding formulas one by one, agents run a ready workflow for RSI, MACD, Bollinger Bands, ATR, ADX, and more.
-            </p>
+            <div class="text-sm text-gray-600 font-sans mb-4 leading-relaxed space-y-2">
+              <p><span class="font-bold text-black">Without open-skills:</span> Agent rebuilds indicators one by one and repeatedly debugs formula and data issues.</p>
+              <p><span class="font-bold text-black">With open-skills:</span> Agent executes a ready workflow for RSI, MACD, Bollinger Bands, ATR, ADX, and more.</p>
+            </div>
             <div class="text-sm font-mono text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
               Result: fast, consistent quant outputs
             </div>
@@ -403,12 +406,13 @@
 
           <article class="border border-gray-200 rounded-2xl p-6 bg-white">
             <div class="text-xs font-bold tracking-wide text-gray-500 mb-3">EXAMPLE 4</div>
-            <h3 class="text-xl font-bold font-sans mb-3 text-black">Generate + Host Report Website</h3>
-            <p class="text-sm text-gray-600 font-sans mb-4 leading-relaxed">
-              Open Skills provides a clean Tailwind report template and a direct hosting flow, so agents publish polished pages without setup churn.
-            </p>
+            <h3 class="text-xl font-bold font-sans mb-3 text-black">Static Assets Hosting via Originless</h3>
+            <div class="text-sm text-gray-600 font-sans mb-4 leading-relaxed space-y-2">
+              <p><span class="font-bold text-black">Without open-skills:</span> Agent tests random hosting providers, upload formats, and endpoint flows before it works.</p>
+              <p><span class="font-bold text-black">With open-skills:</span> Agent runs <span class="font-mono">static-assets-hosting</span>: zip the project folder, upload to Originless, return instant IPFS URL/CID.</p>
+            </div>
             <div class="text-sm font-mono text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
-              Result: predictable output, faster publishing
+              Result: predictable static deploys, fast public links
             </div>
           </article>
         </div>

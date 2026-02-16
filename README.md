@@ -6,12 +6,12 @@
 
 [**MAIN INSTALLATION: USE THE WEBSITE QUICK START**](https://openskills.besoeasy.com/)
 
-[![Use Open Skills Now](https://img.shields.io/badge/USE%20NOW-openskills.besoeasy.com-black?style=for-the-badge)](https://openskills.besoeasy.com/)
+[![Use Open Skills Now](https://img.shields.io/badge/USE%20NOW-openskills.besoeasy.com-2ea44f?style=for-the-badge)](https://openskills.besoeasy.com/)
 
-[![MIT License](https://img.shields.io/badge/license-MIT-black.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-production--ready-black.svg)](skills/)
-[![Contributions](https://img.shields.io/badge/contributions-agent--friendly-black.svg)](CONTRIBUTING.md)
-[![Telegram](https://img.shields.io/badge/community-Telegram-black.svg)](https://t.me/+FC8ppvnUsj8xM2Vl)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Skills](https://img.shields.io/badge/skills-production--ready-brightgreen.svg)](skills/)
+[![Contributions](https://img.shields.io/badge/contributions-agent--friendly-orange.svg)](CONTRIBUTING.md)
+[![Telegram](https://img.shields.io/badge/community-Telegram-26A5E4.svg)](https://t.me/+FC8ppvnUsj8xM2Vl)
 
 Battle-tested, copy-paste skills for AI agents.  
 Less trial-and-error, fewer wasted tokens, faster reliable execution.

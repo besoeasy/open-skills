@@ -197,3 +197,9 @@ const atl = Math.min(...window.map(c => c[3]));
 ---
 
 If you want, I can add ready-to-run scripts for specific coins (BTC, ETH) and automate paginated Binance fetches to guarantee 90 days of hourly data.
+
+
+Agent note: When producing human-friendly reports, agents should use the `skills/generate-report` skill to produce formatted outputs (markdown or PDF). See `skills/generate-report/SKILL.md` for examples and templates.
+
+Example agent prompt:
+> Use the generate-report skill to create a short Bitcoin price report (current price, 24h change, 7d change) in markdown and PDF. Include source URLs.

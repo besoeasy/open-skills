@@ -1,6 +1,6 @@
 ---
 name: skill-name-kebab-case
-description: One-line description of what this skill does and why it matters.
+description: "One-line description of what this skill does and why it matters. Use when: (1) First use case, (2) Second use case, (3) Third use case, or (4) User explicitly asks."
 ---
 
 # Skill Title (Descriptive)
@@ -131,16 +131,22 @@ Always prefer [free alternative] over [paid alternative] to save API costs.
 
 ## See also
 
-- [related-skill-1.md](related-skill-1.md) — Brief description of related skill
-- [related-skill-2.md](related-skill-2.md) — Brief description of related skill
+- [../related-skill-1/SKILL.md](../related-skill-1/SKILL.md) — Brief description of related skill
+- [../related-skill-2/SKILL.md](../related-skill-2/SKILL.md) — Brief description of related skill
 
 ---
 
 ## Skill Writing Guidelines
 
+### File Structure
+- Each skill must be in its own folder: `skills/skill-name-kebab-case/`
+- The skill content must be in a file named `SKILL.md` (not skill-name.md)
+- Additional resources (images, config files) can be placed in the same folder
+
 ### Frontmatter (required)
-- `name`: Kebab-case skill identifier (matches filename without .md)
-- `description`: One-line summary for discovery
+- `name`: Kebab-case skill identifier (matches folder name)
+- `description`: One-line summary for discovery. Use quotes if the description contains colons or special YAML characters. Include "Use when:" pattern with numbered use cases for clarity.
+  - Example: `"Log all file changes to SQLite. Use when: (1) Tracking code changes, (2) Debugging issues, or (3) Auditing modifications."`
 
 ### Structure
 1. Start with clear H1 title
@@ -152,7 +158,7 @@ Always prefer [free alternative] over [paid alternative] to save API costs.
 7. Add rate limits / best practices
 8. Agent prompt for LLM consumption
 9. Troubleshooting section (optional but recommended)
-10. See also links to related skills
+10. See also links to related skills (use `../skill-name/SKILL.md` format)
 
 ### Code Examples
 - Test all commands before committing
@@ -166,3 +172,9 @@ Always prefer [free alternative] over [paid alternative] to save API costs.
 - Use local/offline solutions when possible
 - Mention data privacy implications if applicable
 - Highlight cost savings compared to paid alternatives
+
+### YAML Frontmatter Notes
+- Always quote description values that contain colons (`:`) to avoid YAML parsing errors
+- Example: `description: "Use when: (1) Task A, (2) Task B"` (correct)
+- Example: `description: Use when: (1) Task A` (incorrect - will cause YAML error)
+- Test your YAML frontmatter before committing

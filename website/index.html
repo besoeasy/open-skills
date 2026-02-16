@@ -268,7 +268,14 @@ Auto fork → commit → push → PR via gh (no manual steps).</code
               <!-- Bottom Right: Auto PR -->
               <div class="absolute bottom-12 right-16 network-node" data-node="6">
                 <div class="bg-white border-2 border-purple-300 px-4 py-3 rounded-xl font-semibold text-sm font-mono shadow-lg hover:border-purple-500 hover:shadow-xl transition-all hover:-translate-y-1">
-                  🔄 Auto PR
+                  🔄 Push to Repo
+                </div>
+              </div>
+
+              <!-- Bottom Center: Shared for Everyone -->
+              <div class="absolute bottom-12 left-1/2 -translate-x-1/2 network-node" data-node="7">
+                <div class="bg-white border-2 border-blue-300 px-4 py-3 rounded-xl font-semibold text-sm font-mono shadow-lg hover:border-blue-500 hover:shadow-xl transition-all hover:-translate-y-1">
+                  🌍 Shared by Everyone
                 </div>
               </div>
 
@@ -276,6 +283,9 @@ Auto fork → commit → push → PR via gh (no manual steps).</code
           </div>
 
           <!-- Floating info cards -->
+          <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-blue-50/90 backdrop-blur-sm border border-blue-200 px-4 py-2 rounded-lg text-xs font-mono text-blue-900 shadow-lg">
+            <span class="font-bold">No skill found?</span> Agent learns one and pushes it for everyone.
+          </div>
           <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm border border-gray-200 px-4 py-2 rounded-lg text-xs font-mono text-gray-600 shadow-lg">
             <span class="text-black font-bold">Traditional:</span> 2-3 min, 50k tokens
           </div>
@@ -688,7 +698,8 @@ Auto fork → commit → push → PR via gh (no manual steps).</code
           { x: rect.width * 0.1, y: rect.height * 0.5 },   // Middle left - Execute
           { x: rect.width * 0.9, y: rect.height * 0.5 },   // Middle right - Success
           { x: rect.width * 0.2, y: rect.height * 0.85 },  // Bottom left - Create
-          { x: rect.width * 0.8, y: rect.height * 0.85 },  // Bottom right - Auto PR
+          { x: rect.width * 0.8, y: rect.height * 0.85 },  // Bottom right - Push to Repo
+          { x: rect.width * 0.5, y: rect.height * 0.85 },  // Bottom center - Shared by Everyone
         ];
 
         // Draw connections to center
@@ -717,7 +728,7 @@ Auto fork → commit → push → PR via gh (no manual steps).</code
 
           const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
           circle.setAttribute('r', '4');
-          circle.setAttribute('fill', nodeIndex === 3 ? '#10b981' : nodeIndex === 5 ? '#a855f7' : '#000000');
+          circle.setAttribute('fill', nodeIndex === 3 ? '#10b981' : nodeIndex === 5 ? '#a855f7' : nodeIndex === 6 ? '#2563eb' : '#000000');
           circle.setAttribute('opacity', '0.8');
 
           // Animate from node to center

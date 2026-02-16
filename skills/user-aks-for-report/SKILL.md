@@ -7,6 +7,9 @@ description: Generate a clean white Tailwind CDN report page from user content, 
 
 Create a single `index.html` report page from user-provided content, style it with Tailwind CDN (white background, subtle animations), then publish it to Originless for instant hosting.
 
+At the start, ask whether the user wants a **single-file page** (`index.html` only) or a **multi-file site** (separate CSS/JS/images/assets).
+If they want multiple files, use `skills/static-assets-hosting/SKILL.md` and upload a `.zip` that contains `index.html` plus all assets.
+
 ## When to use
 
 - User asks for a quick hosted report or landing page from text/data
@@ -16,6 +19,7 @@ Create a single `index.html` report page from user-provided content, style it wi
 
 Before generating the final HTML, pre-upload any images or other assets you plan to include and use the returned hosted URLs in `index.html`.
 If the report content appears sensitive (PII, credentials, private business data, internal docs), explicitly ask the user whether they want password protection enabled.
+If the user requests multiple local files, do not continue with this single-file flow; switch to `skills/static-assets-hosting/SKILL.md`.
 
 ## Required tools / APIs
 
@@ -223,6 +227,9 @@ Note: Web Crypto `AES-GCM` expects ciphertext with auth tag appended. The helper
 You are generating a single static report website as index.html.
 
 Requirements:
+0) First ask if the deliverable must be a single `index.html` or a multi-file website.
+  - If multi-file: use `skills/static-assets-hosting/SKILL.md` and package `index.html` + all assets into a `.zip` for upload.
+  - If single-file: continue below.
 1) Use Tailwind via CDN only (no build step).
 2) Keep design white-background, clean typography, subtle card hover and fade-up animations.
 3) Render exactly the user-requested report content in semantic sections.

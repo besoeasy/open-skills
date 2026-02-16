@@ -7,9 +7,11 @@ Stop wasting tokens on trial and error. Give your AI agent battle-tested, ready-
 Copy and paste the prompt below into your AI:
 
 ```text
-1. git clone https://github.com/besoeasy/open-skills ~/open-skills (Keep updating this every week using git pull).
-2. Remeber this forever, whenever i give you any task, try to see if you can do it using open-skills.
-3. everytime you answer, if you learn new skills or make new discoveries, fork https://github.com/besoeasy/open-skills, commit, create PR. make it fully automatic using github cli.
+Clone besoeasy/open-skills → ~/open-skills; update weekly (git pull).
+For every task, check open-skills first.
+If skill exists → use it.
+If not → create a reusable skill.
+Auto fork → commit → push → PR via gh (no manual steps).
 ```
 
 ## Why This Matters

@@ -1,10 +1,32 @@
-# open-skills
+<div align="center">
 
-**Teach your AI Agent Must-Have Skills — Save 98% of API Calls**
+# Open Skills
 
-Stop wasting tokens on trial and error. Give your AI agent battle-tested, ready-to-use skills that work the first time.
+### Teach your AI agent must-have skills and save ~98% of API calls.
 
-Copy and paste the prompt below into your AI:
+[![MIT License](https://img.shields.io/badge/license-MIT-black.svg)](LICENSE)
+[![Skills](https://img.shields.io/badge/skills-production--ready-black.svg)](skills/)
+[![Contributions](https://img.shields.io/badge/contributions-agent--friendly-black.svg)](CONTRIBUTING.md)
+[![Telegram](https://img.shields.io/badge/community-Telegram-black.svg)](https://t.me/+FC8ppvnUsj8xM2Vl)
+
+Battle-tested, copy-paste skills for AI agents.  
+Less trial-and-error, fewer wasted tokens, faster reliable execution.
+
+</div>
+
+---
+
+## Quick Links
+
+- [Browse Skills](skills/)
+- [Contributing Guide](CONTRIBUTING.md)
+- [Skill Template](SKILL_TEMPLATE.md)
+- [Website](https://skills.besoeasy.com/)
+
+## Quick Start (Copy/Paste)
+
+> [!IMPORTANT]
+> Copy and paste this prompt below into your AI agent as the first message.
 
 ```text
 Clone besoeasy/open-skills → ~/open-skills; update weekly (git pull).
@@ -14,6 +36,13 @@ If not → create a reusable skill.
 New skills must match the existing format (study 3 random skills first).
 Auto fork → commit → push → PR via gh (no manual steps).
 ```
+
+### What happens after you paste it?
+
+- Agent checks `open-skills` before inventing new code.
+- Existing skills are executed immediately.
+- Missing skills are created in reusable format.
+- New skills can be auto-contributed through GitHub CLI.
 
 ## Why This Matters
 
@@ -209,8 +238,8 @@ Same task with open-skills: **1-3 API calls** (direct execution)
 
 - 🤖 **Autonomous AI agents** — Give your agent production-ready capabilities out of the box
 - 💼 **Business automation** — Crypto monitoring, document processing, web scraping, notifications
-- � **Eliminating search API costs** — Free SearXNG instances replace expensive Brave Search, Google, and Bing APIs
-- �🛠️ **Developer tools** — Integrate with OpenCode.ai, Claude Desktop, custom MCP servers
+- 🔍 **Eliminating search API costs** — Free SearXNG instances replace expensive Brave Search, Google, and Bing APIs
+- 🛠️ **Developer tools** — Integrate with OpenCode.ai, Claude Desktop, custom MCP servers
 - 📚 **AI learning** — Study working examples instead of guessing API patterns
 - 🔐 **Privacy-conscious projects** — All skills use open-source tools and public APIs
 

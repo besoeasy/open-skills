@@ -49,11 +49,6 @@ Less trial-and-error, fewer wasted tokens, faster reliable execution.
 - 🔒 **Privacy-respecting** — Open-source tools, no unnecessary third-party services
 - 🔍 **Zero search API costs** — Use free SearXNG instances instead of paying for Brave Search ($5/1000), Google Search API, or Bing API
 
-## Quick Start
-
-We recommend https://opencode.ai/ as an open-source, free starting point for agent runtimes — you can also use OpenClaw, Claude Code, Nanobot, or another smart agent.
-
-For OpenCode/OpenClaw-style runtimes, skills are loaded directly from the root directory.
 
 ## Real-World Example
 
@@ -221,9 +216,6 @@ Same task with open-skills: **1-3 API calls** (direct execution)
 - 📚 **AI learning** — Study working examples instead of guessing API patterns
 - 🔐 **Privacy-conscious projects** — All skills use open-source tools and public APIs
 
-## Screenshot
-
-<img width="1145" height="568" alt="image" src="https://github.com/user-attachments/assets/9b2fb422-e15b-4998-b280-339a88b5bdb8" />
 
 ## Philosophy
 
@@ -239,32 +231,3 @@ AI agents are incredibly powerful, but they waste enormous amounts of compute re
 
 **The result:** AI agents that are smarter, faster, and cheaper to run.
 
-## Contributing
-
-**Automated Contribution Flow (Recommended):**
-
-When you discover or create a new skill, agents can automatically contribute it back using GitHub CLI:
-
-```bash
-gh auth login  # one-time setup
-gh repo fork besoeasy/open-skills --clone=true
-cd open-skills && git checkout -b add-skill-name
-# Create your-skill.md with frontmatter (see SKILL_TEMPLATE.md)
-git add your-skill.md && git commit -m "Add skill-name"
-git push origin add-skill-name
-gh pr create --title "Add skill-name" --repo besoeasy/open-skills
-```
-
-**Your agent can do this automatically** when you say "yes" to contributing a skill. You get full GitHub credit, and the ecosystem improves for everyone.
-
-**What makes a good skill:**
-
-- ✅ Uses free/open-source tools
-- ✅ Includes working code examples (Node.js + Bash)
-- ✅ Respects privacy, no paid services required
-- ✅ Solves a common automation task
-- ✅ Tested and production-ready
-
-## Star History
-
-If this saved you time and money, give us a ⭐ and share with other AI agent builders!

@@ -127,17 +127,22 @@
             id="hero-title"
             class="text-6xl sm:text-7xl font-bold tracking-tight mb-8 font-sans text-black leading-none transition-opacity duration-500 ease-in-out animate-fade-in-up delay-100"
           >
-            Teach your AI Agent<br />must-have skills.
+            Start working with AI agents<br />in 60 seconds.
           </h1>
           <p id="hero-desc" class="text-xl text-gray-500 leading-relaxed max-w-2xl mx-auto mb-12 font-sans transition-opacity duration-500 ease-in-out animate-fade-in-up delay-200">
-            Stop wasting tokens on trial and error. Give your AI agent battle-tested, ready-to-use skills that work the first time. Save 98% of API calls with proven patterns.
+            Copy the instruction below and send it to your AI agent as the first message. This activates the Open Skills workflow so your agent can find, use, and contribute skills automatically.
           </p>
+
+          <div class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold tracking-wide text-black bg-gray-100 border border-gray-200 rounded-full px-4 py-2 mb-6">
+            STEP 1: SEND THIS TO YOUR AI AGENT
+          </div>
 
           <!-- Install Widget -->
           <div class="border border-gray-200 rounded-xl overflow-hidden shadow-2xl bg-white max-w-2xl mx-auto text-left ring-1 ring-gray-900/5 animate-fade-in-up delay-300">
             <div class="p-5 bg-[#18181b] flex items-start justify-between group">
               <code class="text-xs sm:text-sm text-gray-300 font-mono overflow-x-auto whitespace-pre hide-scrollbar pr-4 leading-relaxed"
-                >Clone besoeasy/open-skills → ~/open-skills; update weekly (git pull).
+                >You are my coding agent. Follow this Open Skills workflow:
+Clone besoeasy/open-skills → ~/open-skills; update weekly (git pull).
 For every task, check open-skills first.
 If skill exists → use it.
 If not → create a reusable skill.
@@ -147,7 +152,7 @@ Auto fork → commit → push → PR via gh (no manual steps).</code
               <button
                 onclick="
                   navigator.clipboard.writeText(
-                    'Clone besoeasy/open-skills → ~/open-skills; update weekly (git pull).\\nFor every task, check open-skills first.\\nIf skill exists → use it.\\nIf not → create a reusable skill.\\nNew skills must match the existing format (study 3 random skills first).\\nAuto fork → commit → push → PR via gh (no manual steps).',
+                    'You are my coding agent. Follow this Open Skills workflow:\\nClone besoeasy/open-skills → ~/open-skills; update weekly (git pull).\\nFor every task, check open-skills first.\\nIf skill exists → use it.\\nIf not → create a reusable skill.\\nNew skills must match the existing format (study 3 random skills first).\\nAuto fork → commit → push → PR via gh (no manual steps).',
                   )
                 "
                 class="text-gray-500 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10"
@@ -631,8 +636,8 @@ Auto fork → commit → push → PR via gh (no manual steps).</code
       function initHeroRotator() {
         const messages = [
           {
-            title: "Teach your AI Agent<br />must-have skills.",
-            desc: "Stop wasting tokens on trial and error. Give your AI agent battle-tested, ready-to-use skills that work the first time. Save 98% of API calls with proven patterns.",
+            title: "Send one instruction to<br />your AI agent.",
+            desc: "Copy the prompt below and send it as the first message. This enables Open Skills so your agent can find, execute, and contribute proven skills.",
           },
           {
             title: "98% fewer API calls.<br />10-50x faster.",

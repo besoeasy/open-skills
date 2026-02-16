@@ -9,7 +9,7 @@ Copy and paste the prompt below into your AI:
 ```text
 1. git clone https://github.com/besoeasy/open-skills ~/open-skills (Keep updating this every week using git pull).
 2. Remeber this forever, whenever i give you any task, try to see if you can do it using open-skills.
-3. everytime you answer, if you learn new skills or make new discoveries, fork open-skills, commit, create PR. make it fully automatic using github cli.
+3. everytime you answer, if you learn new skills or make new discoveries, fork https://github.com/besoeasy/open-skills, commit, create PR. make it fully automatic using github cli.
 ```
 
 ## Why This Matters

@@ -1,309 +1,359 @@
 ---
 name: chat-logger
-description: Log all chat messages (user and assistant) from all channels to a SQLite database for verbatim recall.
+description: "Log all chat messages to a SQLite database for searchable history and audit. Use when: (1) Building chat history, (2) Auditing conversations, (3) Searching past messages, or (4) User asks to log chats."
 ---
 
 # Chat Logger
 
-Automatically logs all incoming and outgoing chat messages to a SQLite database. Essential for building a searchable chat history and auditing conversations.
+Log all incoming and outgoing chat messages to a SQLite database for searchable history, analytics, and auditing. Works with any chat system or agent framework.
 
 ## When to use
 
-- When you need to remember exact wording of past conversations
-- Building a searchable chat history
-- Auditing conversations
-- The user asks to log chats
+- Building a searchable chat history system
+- Auditing and reviewing past conversations
+- Creating analytics on chat interactions
+- Debugging chat flows and responses
+- User asks to track or search conversation history
 
 ## Required tools / APIs
 
 - Python standard library (sqlite3, datetime, json)
-- nanobot agent framework
+- Any programming language with SQLite support
 
-No external APIs required.
+No external APIs or services required.
 
-## Installation
+## Database Schema
 
-```bash
-# Create the logging directory
-mkdir -p ~/.nanobot
+```sql
+CREATE TABLE IF NOT EXISTS messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  timestamp TEXT NOT NULL,
+  session_id TEXT,
+  sender TEXT NOT NULL,           -- 'user', 'assistant', or identifier
+  content TEXT,
+  metadata TEXT,                  -- JSON: channel, tools_used, etc.
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
-# Create the agent.py file with logging code
-cat > ~/.nanobot/agent.py << 'EOF'
-"""Custom agent with logging hooks for chat and file tracking."""
+CREATE INDEX idx_timestamp ON messages(timestamp);
+CREATE INDEX idx_session ON messages(session_id);
+CREATE INDEX idx_sender ON messages(sender);
+```
 
-import json
+**Fields:**
+- `id` - Auto-incrementing primary key
+- `timestamp` - ISO 8601 timestamp of the message
+- `session_id` - Optional session/conversation identifier
+- `sender` - Message sender ('user', 'assistant', or custom ID)
+- `content` - Message text content
+- `metadata` - JSON field for additional data (channel, tools, context)
+- `created_at` - Database insertion timestamp
+
+## Basic Implementation
+
+### Python
+
+**Initialize database:**
+
+```python
 import sqlite3
-from pathlib import Path
 from datetime import datetime
-from typing import Any
+from pathlib import Path
+import json
 
-from nanobot.agent.loop import AgentLoop
-from nanobot.bus.events import InboundMessage, OutboundMessage
+# Configure database path
+DB_PATH = Path.home() / ".chat_logs" / "messages.db"
 
-
-# Database setup
-DB_PATH = Path.home() / ".nanobot" / "chat_logs.db"
-
-
-def _get_db():
-    """Get database connection."""
-    conn = sqlite3.connect(str(DB_PATH))
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-def _init_db():
-    """Initialize database tables if they don't exist."""
+def init_db():
+    """Initialize database and create tables."""
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = _get_db()
+    conn = sqlite3.connect(str(DB_PATH))
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp TEXT NOT NULL,
+            session_id TEXT,
+            sender TEXT NOT NULL,
+            content TEXT,
+            metadata TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON messages(timestamp)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_session ON messages(session_id)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_sender ON messages(sender)")
+    conn.commit()
+    conn.close()
+
+# Initialize on import
+init_db()
+```
+
+**Log messages:**
+
+```python
+def log_message(sender: str, content: str, session_id: str = None, metadata: dict = None):
+    """Log a chat message to the database."""
+    conn = sqlite3.connect(str(DB_PATH))
     try:
-        # Chat messages table
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS messages (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TEXT NOT NULL,
-                channel TEXT NOT NULL,
-                chat_id TEXT NOT NULL,
-                sender TEXT NOT NULL,
-                content TEXT,
-                message_type TEXT NOT NULL,
-                tools_used TEXT
+        conn.execute(
+            """INSERT INTO messages (timestamp, session_id, sender, content, metadata)
+               VALUES (?, ?, ?, ?, ?)""",
+            (
+                datetime.utcnow().isoformat(),
+                session_id,
+                sender,
+                content[:10000] if content else None,  # Truncate long messages
+                json.dumps(metadata) if metadata else None
             )
-        """)
-        
-        # File changes table
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS file_changes (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TEXT NOT NULL,
-                operation TEXT NOT NULL,
-                file_path TEXT NOT NULL,
-                content_preview TEXT,
-                user TEXT DEFAULT 'assistant'
-            )
-        """)
-        
+        )
         conn.commit()
     finally:
         conn.close()
 
-
-# Initialize on import
-_init_db()
-
-
-class LoggingAgentLoop(AgentLoop):
-    """
-    Extended AgentLoop with automatic logging of:
-    - All chat messages (inbound and outbound)
-    - All file modifications (via tool execution hooks)
-    """
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Override the tools registry with a logging wrapper
-        self._original_tools = self.tools
-        self.tools = LoggingToolRegistry(self.tools, self._log_file_change)
-    
-    def _log_message(self, msg: InboundMessage | OutboundMessage, msg_type: str, tools_used: list | None = None):
-        """Log a message to the database."""
-        conn = _get_db()
-        try:
-            sender = msg.sender_id if isinstance(msg, InboundMessage) else "assistant"
-            conn.execute(
-                """INSERT INTO messages (timestamp, channel, chat_id, sender, content, message_type, tools_used)
-                   VALUES (?, ?, ?, ?, ?, ?, ?)""",
-                (
-                    datetime.now().isoformat(),
-                    msg.channel,
-                    msg.chat_id,
-                    sender,
-                    msg.content[:5000] if msg.content else None,
-                    msg_type,
-                    json.dumps(tools_used) if tools_used else None,
-                )
-            )
-            conn.commit()
-        finally:
-            conn.close()
-    
-    def _log_file_change(self, operation: str, file_path: str, content_preview: str | None = None):
-        """Log a file change to the database."""
-        conn = _get_db()
-        try:
-            conn.execute(
-                """INSERT INTO file_changes (timestamp, operation, file_path, content_preview, user)
-                   VALUES (?, ?, ?, ?, ?)""",
-                (
-                    datetime.now().isoformat(),
-                    operation,
-                    file_path,
-                    content_preview[:500] if content_preview else None,
-                    "assistant",
-                )
-            )
-            conn.commit()
-        finally:
-            conn.close()
-    
-    async def _process_message(self, msg: InboundMessage, session_key: str | None = None):
-        """Override to log inbound messages before processing."""
-        # Log inbound message
-        self._log_message(msg, "inbound")
-        
-        # Call parent processing
-        response = await super()._process_message(msg, session_key)
-        
-        # Log outbound message (response)
-        if response:
-            self._log_message(response, "outbound")
-        
-        return response
-
-
-class LoggingToolRegistry:
-    """Wrapper around ToolRegistry that logs file operations."""
-    
-    def __init__(self, wrapped, file_callback):
-        self._wrapped = wrapped
-        self._file_callback = file_callback
-    
-    def __getattr__(self, name):
-        return getattr(self._wrapped, name)
-    
-    async def execute(self, tool_name: str, arguments: dict) -> Any:
-        """Execute a tool and log file operations."""
-        # Log file operations before execution
-        if tool_name in ("write_file", "edit_file"):
-            file_path = arguments.get("path", "")
-            if tool_name == "write_file":
-                self._file_callback("write", file_path, arguments.get("content", ""))
-            elif tool_name == "edit_file":
-                self._file_callback("edit", file_path, arguments.get("old_text", ""))
-        
-        # Execute the tool
-        result = await self._wrapped.execute(tool_name, arguments)
-        
-        return result
-
-
-def get_custom_agent():
-    """Return the custom agent class for use by nanobot."""
-    return LoggingAgentLoop
-EOF
-
-# Create the bootstrap runner
-cat > ~/.nanobot/run.py << 'EOF'
-#!/usr/bin/env python3
-"""
-Bootstrap script that patches nanobot with custom logging before running.
-Run this instead of 'nanobot' to enable logging.
-"""
-
-import os
-import sys
-from pathlib import Path
-
-# Change to ~/.nanobot so 'from agent import X' works
-NANOBOT_DIR = Path.home() / ".nanobot"
-os.chdir(NANOBOT_DIR)
-
-# Add custom agent to path
-sys.path.insert(0, str(NANOBOT_DIR))
-
-# Patch the module BEFORE nanobot.cli.commands is imported
-import nanobot.agent.loop
-
-# Import our custom logging agent
-from agent import LoggingAgentLoop
-
-# Replace in the module's namespace
-nanobot.agent.loop.AgentLoop = LoggingAgentLoop
-
-# Now run the actual CLI
-from nanobot.cli.commands import app
-
-if __name__ == "__main__":
-    app()
-EOF
-
-chmod +x ~/.nanobot/run.py
+# Usage examples
+log_message("user", "Hello, how are you?", session_id="session_123")
+log_message("assistant", "I'm doing well, thank you!", session_id="session_123")
+log_message("user", "Help me deploy a website", session_id="session_456",
+            metadata={"channel": "web", "ip": "192.168.1.1"})
 ```
 
-## Usage
-
-Instead of running `nanobot agent`, run:
-
-```bash
-python ~/.nanobot/run.py agent -m "Your message"
-python ~/.nanobot/run.py gateway
-```
-
-## Querying Logs
+**Query messages:**
 
 ```python
-import sqlite3
+def get_recent_messages(limit: int = 50):
+    """Get recent messages."""
+    conn = sqlite3.connect(str(DB_PATH))
+    conn.row_factory = sqlite3.Row
+    cursor = conn.execute(
+        "SELECT * FROM messages ORDER BY timestamp DESC LIMIT ?",
+        (limit,)
+    )
+    results = cursor.fetchall()
+    conn.close()
+    return results
 
-conn = sqlite3.connect('/root/.nanobot/chat_logs.db')
-conn.row_factory = sqlite3.Row
+def get_session_history(session_id: str):
+    """Get all messages from a specific session."""
+    conn = sqlite3.connect(str(DB_PATH))
+    conn.row_factory = sqlite3.Row
+    cursor = conn.execute(
+        "SELECT * FROM messages WHERE session_id = ? ORDER BY timestamp ASC",
+        (session_id,)
+    )
+    results = cursor.fetchall()
+    conn.close()
+    return results
 
-# Get all messages
-cursor = conn.execute('SELECT * FROM messages ORDER BY timestamp DESC')
+def search_messages(query: str, limit: int = 20):
+    """Search message content."""
+    conn = sqlite3.connect(str(DB_PATH))
+    conn.row_factory = sqlite3.Row
+    cursor = conn.execute(
+        "SELECT * FROM messages WHERE content LIKE ? ORDER BY timestamp DESC LIMIT ?",
+        (f"%{query}%", limit)
+    )
+    results = cursor.fetchall()
+    conn.close()
+    return results
 
-# Get messages from a specific channel
-cursor = conn.execute(
-    'SELECT * FROM messages WHERE channel = ? ORDER BY timestamp DESC',
-    ('telegram',)
-)
+# Usage
+messages = get_recent_messages(10)
+for msg in messages:
+    print(f"[{msg['timestamp']}] {msg['sender']}: {msg['content'][:100]}")
 
-# Get conversation history for a specific chat
-cursor = conn.execute(
-    'SELECT * FROM messages WHERE channel = ? AND chat_id = ? ORDER BY timestamp',
-    ('telegram', '123456789')
-)
-
-for row in cursor:
-    print(f"[{row['timestamp']}] {row['sender']}: {row['content'][:100]}...")
-
-conn.close()
+# Search
+results = search_messages("deploy website")
+print(f"Found {len(results)} messages about deploying websites")
 ```
 
-## Database Schema
+### Node.js
 
-**messages table:**
-- `id` - Primary key
-- `timestamp` - ISO format datetime
-- `channel` - Source channel (cli, telegram, discord, etc.)
-- `chat_id` - Chat identifier
-- `sender` - user or assistant
-- `content` - Message text (truncated to 5000 chars)
-- `message_type` - inbound or outbound
-- `tools_used` - JSON array of tool names used (if any)
+```javascript
+import sqlite3 from "sqlite3";
+import { promisify } from "util";
+import path from "path";
+import os from "os";
 
-## Agent prompt
+const DB_PATH = path.join(os.homedir(), ".chat_logs", "messages.db");
+
+// Initialize database
+const db = new sqlite3.Database(DB_PATH);
+const run = promisify(db.run.bind(db));
+const all = promisify(db.all.bind(db));
+
+await run(`
+  CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp TEXT NOT NULL,
+    session_id TEXT,
+    sender TEXT NOT NULL,
+    content TEXT,
+    metadata TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
+// Log message
+async function logMessage(sender, content, sessionId = null, metadata = null) {
+  await run(
+    `INSERT INTO messages (timestamp, session_id, sender, content, metadata)
+     VALUES (?, ?, ?, ?, ?)`,
+    [
+      new Date().toISOString(),
+      sessionId,
+      sender,
+      content,
+      metadata ? JSON.stringify(metadata) : null,
+    ]
+  );
+}
+
+// Query messages
+async function getRecentMessages(limit = 50) {
+  return await all(
+    `SELECT * FROM messages ORDER BY timestamp DESC LIMIT ?`,
+    [limit]
+  );
+}
+
+// Usage
+await logMessage("user", "Hello!", "session_123");
+await logMessage("assistant", "Hi there!", "session_123");
+
+const messages = await getRecentMessages(10);
+console.log(messages);
+```
+
+## Bash Quick Queries
+
+```bash
+# View recent messages
+sqlite3 ~/.chat_logs/messages.db "SELECT timestamp, sender, substr(content, 1, 80) FROM messages ORDER BY timestamp DESC LIMIT 20"
+
+# Search for specific content
+sqlite3 ~/.chat_logs/messages.db "SELECT * FROM messages WHERE content LIKE '%docker%' ORDER BY timestamp DESC"
+
+# Count messages by sender
+sqlite3 ~/.chat_logs/messages.db "SELECT sender, COUNT(*) as count FROM messages GROUP BY sender"
+
+# Export session to JSON
+sqlite3 -json ~/.chat_logs/messages.db "SELECT * FROM messages WHERE session_id='session_123' ORDER BY timestamp ASC" > conversation.json
+```
+
+## Integration Examples
+
+### Generic Chat Application
+
+```python
+class ChatLogger:
+    """Simple chat logger that can wrap any chat system."""
+
+    def __init__(self, db_path: str = None):
+        self.db_path = db_path or str(Path.home() / ".chat_logs" / "messages.db")
+        self._init_db()
+
+    def _init_db(self):
+        # Same as init_db() above
+        pass
+
+    def log_user_message(self, content: str, session_id: str = None, **metadata):
+        return log_message("user", content, session_id, metadata)
+
+    def log_assistant_message(self, content: str, session_id: str = None, **metadata):
+        return log_message("assistant", content, session_id, metadata)
+
+    def get_conversation(self, session_id: str):
+        return get_session_history(session_id)
+
+# Usage in any chat system
+logger = ChatLogger()
+
+# In your chat handler
+def handle_message(user_input, session_id):
+    logger.log_user_message(user_input, session_id=session_id)
+
+    # Process message...
+    response = generate_response(user_input)
+
+    logger.log_assistant_message(response, session_id=session_id)
+    return response
+```
+
+### Decorator Pattern
+
+```python
+def with_logging(session_id: str = None):
+    """Decorator to automatically log chat interactions."""
+    def decorator(func):
+        def wrapper(user_message, *args, **kwargs):
+            # Log user message
+            log_message("user", user_message, session_id=session_id)
+
+            # Call original function
+            response = func(user_message, *args, **kwargs)
+
+            # Log assistant response
+            log_message("assistant", response, session_id=session_id)
+
+            return response
+        return wrapper
+    return decorator
+
+# Usage
+@with_logging(session_id="session_123")
+def chat_handler(message):
+    return f"You said: {message}"
+```
+
+## Agent Prompt
 
 ```text
-You have chat logging capability. When the user asks to:
+You have chat logging capability. All conversations are logged to a SQLite database.
+
+When user asks to:
 - Search past conversations
-- Find a specific message
-- Review chat history
+- Find specific messages
+- Review conversation history
+- Export chat logs
 
-Use the SQLite database at ~/.nanobot/chat_logs.db to query message history.
-Tables: messages (columns: timestamp, channel, chat_id, sender, content, message_type, tools_used).
+Use the SQLite database at ~/.chat_logs/messages.db with this schema:
+- messages table (id, timestamp, session_id, sender, content, metadata)
 
-Always use python with sqlite3 to query, then present relevant results to the user.
+Query examples:
+1. Recent history: SELECT * FROM messages ORDER BY timestamp DESC LIMIT 50
+2. Search content: SELECT * FROM messages WHERE content LIKE '%keyword%'
+3. Session history: SELECT * FROM messages WHERE session_id = ? ORDER BY timestamp ASC
+
+Always use SQL queries to retrieve information and present results clearly to the user.
 ```
+
+## Best Practices
+
+1. **Truncate long messages** to avoid database bloat (e.g., 10,000 chars)
+2. **Use indexes** on timestamp, session_id, and sender for fast queries
+3. **Store metadata as JSON** for flexibility
+4. **Use ISO 8601 timestamps** for consistency
+5. **Session IDs** help organize conversations
+6. **Privacy considerations**: be mindful of storing sensitive data
+7. **Regular backups**: SQLite files are easy to backup/restore
 
 ## Troubleshooting
 
-**No messages being logged:**
-- Ensure you're using `python ~/.nanobot/run.py` instead of `nanobot`
-- Check that the database file exists: `ls -la ~/.nanobot/chat_logs.db`
+**Database locked error:**
+- Close all connections properly with `conn.close()`
+- Use connection pooling for high traffic
 
-**Database errors:**
-- Check file permissions: `chmod 755 ~/.nanobot/`
+**Large database file:**
+- Run `VACUUM` to compact: `sqlite3 messages.db "VACUUM"`
+- Archive old messages periodically
+
+**Query performance:**
+- Ensure indexes are created (timestamp, session_id, sender)
+- Use LIMIT on queries
+- Consider pagination for large result sets
 
 ## See also
 
-- [file-tracker.md](file-tracker.md) — Track file modifications
-- [memory.md](../memory/SKILL.md) — Long-term memory management
+- [../file-tracker/SKILL.md](../file-tracker/SKILL.md) — Track file modifications
+- [../web-search-api/SKILL.md](../web-search-api/SKILL.md) — Search external content

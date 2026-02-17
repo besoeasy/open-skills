@@ -4,9 +4,10 @@
 
 ## Teach your AI Agent Must-Have Skills — Save 98% of API Calls
 
-Stop wasting tokens on trial and error. Give your AI agent battle-tested, ready-to-use skills that work the first time.
+Stop wasting tokens on trial-and-error.
 
-### Get AI agent skill definitions that cut token usage by 95–98%, lower model costs, and make smaller models reliable.
+Give your AI agent battle-tested, ready-to-use skills that work the first time —
+cut token usage by **95–98%**, lower model costs, and make smaller models reliable.
 
 [**MAIN INSTALLATION: USE THE WEBSITE QUICK START**](https://openskills.besoeasy.com/)
 
@@ -17,10 +18,13 @@ Stop wasting tokens on trial and error. Give your AI agent battle-tested, ready-
 [![Contributions](https://img.shields.io/badge/contributions-agent--friendly-orange.svg)](CONTRIBUTING.md)
 [![Telegram](https://img.shields.io/badge/community-Telegram-26A5E4.svg)](https://t.me/+FC8ppvnUsj8xM2Vl)
 
-Battle-tested, copy-paste skill definitions for AI agents.  
-**Two ways to win:**  
-🏠 **Go 100% free:** Ollama + Llama/Mistral/Qwen + Open Skills = cloud-level task execution at $0  
-💰 **Cut cloud spend by 95–98%:** GPT-4/Claude/Gemini + Open Skills = ~$0.003–$0.005/task instead of ~$0.15–$0.25
+Battle-tested, copy-paste execution playbooks for AI agents.
+
+**Two ways to win:**
+
+🏠 **Go 100% free** — Ollama + Llama/Mistral/Qwen + Open Skills = cloud-level practical task execution at **$0**
+
+💰 **Keep cloud quality, slash cloud cost** — GPT-4/Claude/Gemini + Open Skills = **~$0.003–$0.005/task** instead of **~$0.15–$0.25**
 
 </div>
 

@@ -2,7 +2,7 @@
 
 # Open Skills
 
-### Make local models as powerful as cloud models, or make cloud models 98% cheaper. 100% free & self-hostable.
+### Give any AI model execution-ready skills: run local at $0, or cut cloud costs by 95–98%.
 
 [**MAIN INSTALLATION: USE THE WEBSITE QUICK START**](https://openskills.besoeasy.com/)
 
@@ -15,8 +15,8 @@
 
 Battle-tested, copy-paste skills for AI agents.  
 **Two ways to win:**  
-🏠 **Go 100% free:** Llama/Mistral + Open Skills = Cloud-model performance at $0 cost  
-💰 **Save 98% on cloud:** GPT-4/Claude + Open Skills = $0.005/task instead of $0.25
+🏠 **Go 100% free:** Llama/Mistral/Qwen + Open Skills = cloud-level task execution at $0  
+💰 **Cut cloud spend by 95–98%:** GPT-4/Claude/Gemini + Open Skills = ~$0.003–$0.005/task instead of ~$0.15–$0.25
 
 </div>
 
@@ -32,8 +32,8 @@ Battle-tested, copy-paste skills for AI agents.
 
 **The Problem:** AI agents are expensive and cloud-dependent:
 
-- **Cloud models (GPT-4, Claude):** Make 10-30+ API calls experimenting with each task → $0.25+ per simple task
-- **Local models (Llama, Mistral):** Struggle to figure out APIs and tools without guidance → often fail or give up
+- **Cloud models (GPT-4, Claude, Gemini):** Often spend 10–30+ calls discovering and debugging each task → ~$0.15–$0.25 per simple task
+- **Local models (Llama, Mistral, Qwen):** Often know the goal but fail at API/tool details without guidance
 - Both burn through tokens on trial-and-error, searching documentation, and debugging
 
 **The Solution:** Pre-written, tested skills that work with ANY AI model:
@@ -43,15 +43,22 @@ Battle-tested, copy-paste skills for AI agents.
 - ✅ **Agent-optimized prompts** — structured for direct consumption by LLMs
 - ✅ **Real-world tested** — production-ready patterns, not theoretical examples
 
+**The New Approach:** Separate reasoning from execution knowledge.
+
+- Model handles intent and orchestration
+- Open Skills provides tested implementation steps (commands, API patterns, parsing logic)
+- Outcome: faster execution, lower token usage, and higher reliability across both cloud and local models
+
 **The Game-Changer:** 🚀 **Make local models as capable as cloud models**
 
-Instead of expensive cloud models figuring things out from scratch, **give cheap local models the answers**:
+Instead of paying models to figure everything out from scratch, **give them proven execution playbooks**:
 - Llama 3.1 / Mistral / Qwen (free, local) + Open Skills → performs like GPT-4/Claude for practical tasks
 - **Result: $0 cost, 100% self-hostable, complete privacy**
 
 **The Impact:**
 
-- 💰 **~98% cost reduction** — Local models with skills = $0 vs. GPT-4 at $0.25+ per task
+- 💰 **95–98% cloud cost reduction** — Cloud models drop from ~$0.15–$0.25 to ~$0.003–$0.005 per task with skills
+- 🏠 **$0 local operation** — Local models + skills run practical tasks without cloud spend
 - 🏠 **100% self-hostable** — Run Ollama + Open Skills entirely offline
 - 🔒 **Complete privacy** — No data leaves your machine
 - ⚡ **10-50x faster execution** — No trial-and-error loops
@@ -132,7 +139,7 @@ Result: ❌ Expensive, requires API keys, tracked searches
 ```
 User: "Search for recent AI agent news"
 
-Agent → Uses SearXNG skill (learns from [skills/web-search-api.md](skills/web-search-api.md))
+Agent → Uses SearXNG skill (learns from [skills/web-search-api/SKILL.md](skills/web-search-api/SKILL.md))
       → Connects to free SearXNG instance (searx.be)
       → Gets results from 70+ search engines
       → No API key, no rate limits, no tracking

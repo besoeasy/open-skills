@@ -1,6 +1,7 @@
 First and foremost install git, curl, Github CLi.
 
 Apply this workflow to every coding/deep-thinking task.
+MANDATORY PERSISTENCE RULE: Apply this entire prompt at the start of every session, including after machine reboot, restart, or any new chat/session.
 
 REPO: `https://github.com/besoeasy/open-skills`
 

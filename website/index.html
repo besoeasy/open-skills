@@ -714,28 +714,23 @@
       </div>
     </div>
 
-    <!-- Telegram Community Section -->
+    <!-- Contributors Section -->
     <div class="border-t border-gray-200 bg-gray-50 py-16">
       <div class="max-w-6xl mx-auto px-4 sm:px-6">
-        <div class="bg-white border-2 border-gray-200 rounded-2xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
-          <div class="text-center md:text-left">
-            <div class="inline-flex items-center gap-2 text-xs font-bold tracking-wide text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-3 py-1 mb-4">
-              TELEGRAM COMMUNITY
+        <div class="bg-white border-2 border-gray-200 rounded-2xl p-8 md:p-10 shadow-sm">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-2 text-xs font-bold tracking-wide text-black bg-gray-100 border border-gray-200 rounded-full px-3 py-1 mb-4">
+              COMMUNITY CONTRIBUTORS
             </div>
-            <h3 class="text-2xl md:text-3xl font-bold font-sans text-black mb-2">Join the Open Skills Builders Group</h3>
-            <p class="text-gray-600 font-sans">Get updates, share new skills, and collaborate with builders shipping AI agents.</p>
+            <h3 class="text-2xl md:text-3xl font-bold font-sans text-black mb-2">Built by AI agents and humans alike</h3>
+            <p class="text-gray-600 font-sans max-w-3xl mx-auto">
+              Vetted by computer scientists and cybersecurity experts. Here are 6 random contributors from the Open Skills repository.
+            </p>
           </div>
 
-          <a
-            href="https://t.me/+FC8ppvnUsj8xM2Vl"
-            target="_blank"
-            class="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors whitespace-nowrap"
-          >
-            Join Telegram Group
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </a>
+          <div id="contributors-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div class="col-span-full text-center text-sm text-gray-500 font-sans">Loading contributors...</div>
+          </div>
         </div>
       </div>
     </div>
@@ -808,6 +803,51 @@
         } catch (e) {
           const starsHero = document.getElementById("stars-hero");
           if (starsHero) starsHero.textContent = "";
+        }
+      }
+
+      async function loadRandomContributors() {
+        const contributorsGrid = document.getElementById("contributors-grid");
+        if (!contributorsGrid) return;
+
+        const fallback = [
+          { login: "besoeasy", html_url: "https://github.com/besoeasy", avatar_url: "https://github.com/besoeasy.png" },
+        ];
+
+        try {
+          const response = await fetch("https://api.github.com/repos/besoeasy/open-skills/contributors?per_page=100");
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          const contributors = await response.json();
+          const validContributors = (Array.isArray(contributors) ? contributors : fallback).filter(
+            (contributor) => contributor && contributor.login && contributor.html_url && contributor.avatar_url,
+          );
+
+          const shuffled = [...validContributors].sort(() => Math.random() - 0.5);
+          const picked = shuffled.slice(0, 6);
+
+          const renderList = picked.length ? picked : fallback;
+          contributorsGrid.innerHTML = renderList
+            .map(
+              (contributor) => `
+                <a href="${contributor.html_url}" target="_blank" class="group border border-gray-200 rounded-xl p-3 bg-gray-50 hover:bg-white hover:border-black transition-all text-center">
+                  <img src="${contributor.avatar_url}" alt="${contributor.login}" class="w-14 h-14 rounded-full mx-auto mb-2 border border-gray-200 group-hover:border-black transition-colors" />
+                  <div class="text-xs font-bold text-black font-mono truncate">${contributor.login}</div>
+                </a>
+              `,
+            )
+            .join("");
+        } catch (error) {
+          contributorsGrid.innerHTML = fallback
+            .map(
+              (contributor) => `
+                <a href="${contributor.html_url}" target="_blank" class="group border border-gray-200 rounded-xl p-3 bg-gray-50 hover:bg-white hover:border-black transition-all text-center">
+                  <img src="${contributor.avatar_url}" alt="${contributor.login}" class="w-14 h-14 rounded-full mx-auto mb-2 border border-gray-200 group-hover:border-black transition-colors" />
+                  <div class="text-xs font-bold text-black font-mono truncate">${contributor.login}</div>
+                </a>
+              `,
+            )
+            .join("");
         }
       }
 
@@ -1343,6 +1383,7 @@
       document.addEventListener("DOMContentLoaded", () => {
         loadSkillContent();
         loadStars();
+        loadRandomContributors();
         animateFeatures();
         initScrollAnimations();
         initExamplesRotator();

@@ -2,6 +2,10 @@
 
 # Open Skills
 
+## Teach your AI Agent Must-Have Skills — Save 98% of API Calls
+
+Stop wasting tokens on trial and error. Give your AI agent battle-tested, ready-to-use skills that work the first time.
+
 ### Get AI agent skill definitions that cut token usage by 95–98%, lower model costs, and make smaller models reliable.
 
 [**MAIN INSTALLATION: USE THE WEBSITE QUICK START**](https://openskills.besoeasy.com/)

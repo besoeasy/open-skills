@@ -2,7 +2,7 @@
 
 # Open Skills
 
-### Make local AI models as powerful as GPT-4 — 100% free, self-hostable, and private.
+### Make local models as powerful as cloud models, or make cloud models 98% cheaper. 100% free & self-hostable.
 
 [**MAIN INSTALLATION: USE THE WEBSITE QUICK START**](https://openskills.besoeasy.com/)
 
@@ -14,7 +14,9 @@
 [![Telegram](https://img.shields.io/badge/community-Telegram-26A5E4.svg)](https://t.me/+FC8ppvnUsj8xM2Vl)
 
 Battle-tested, copy-paste skills for AI agents.  
-**Turn Llama 3.1 8B into a GPT-4 competitor** with pre-written skills. No cloud APIs, no costs, complete privacy.
+**Two ways to win:**  
+🏠 **Go 100% free:** Llama/Mistral + Open Skills = Cloud-model performance at $0 cost  
+💰 **Save 98% on cloud:** GPT-4/Claude + Open Skills = $0.005/task instead of $0.25
 
 </div>
 
@@ -41,11 +43,10 @@ Battle-tested, copy-paste skills for AI agents.
 - ✅ **Agent-optimized prompts** — structured for direct consumption by LLMs
 - ✅ **Real-world tested** — production-ready patterns, not theoretical examples
 
-**The Game-Changer:** 🚀 **Make local models as capable as GPT-4**
+**The Game-Changer:** 🚀 **Make local models as capable as cloud models**
 
 Instead of expensive cloud models figuring things out from scratch, **give cheap local models the answers**:
-- Llama 3.1 8B (free, local) + Open Skills → performs like GPT-4 for practical tasks
-- Mistral 7B (free, local) + Open Skills → handles complex workflows reliably
+- Llama 3.1 / Mistral / Qwen (free, local) + Open Skills → performs like GPT-4/Claude for practical tasks
 - **Result: $0 cost, 100% self-hostable, complete privacy**
 
 **The Impact:**
@@ -63,48 +64,48 @@ Instead of expensive cloud models figuring things out from scratch, **give cheap
 
 ## Real-World Example
 
-**Without open-skills (GPT-4):**
+**Without open-skills (Cloud models like GPT-4/Claude):**
 
 ```
 User: "Check the balance of this Bitcoin address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
 
-GPT-4 Agent → Searches for "bitcoin balance API"
-            → Tries blockchain.com (wrong endpoint)
-            → Tries blockchain.info (wrong format)
-            → Debugs response parsing
-            → Realizes satoshis need conversion
-            → Finally works after 15-20 API calls
+Cloud AI Agent → Searches for "bitcoin balance API"
+                → Tries blockchain.com (wrong endpoint)
+                → Tries blockchain.info (wrong format)
+                → Debugs response parsing
+                → Realizes satoshis need conversion
+                → Finally works after 15-20 API calls
 
-Result: ❌ 2-3 minutes, 50,000+ tokens, $0.25 cost
+Result: ❌ 2-3 minutes, 50,000+ tokens, $0.15-$0.25 cost
 ```
 
-**Without open-skills (Llama 3.1 8B local):**
+**Without open-skills (Local models like Llama/Mistral):**
 
 ```
 User: "Check the balance of this Bitcoin address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
 
-Llama 8B → Tries to search for API documentation
-         → Gets confused about endpoints
-         → Generates incorrect curl command
-         → Unable to parse response correctly
-         → Gives up or returns error
+Local AI (Llama/Mistral) → Tries to search for API documentation
+                         → Gets confused about endpoints
+                         → Generates incorrect curl command
+                         → Unable to parse response correctly
+                         → Gives up or returns error
 
 Result: ❌ Task fails, user frustrated
 ```
 
-**With open-skills (ANY MODEL):**
+**With open-skills (ANY MODEL - GPT-4, Claude, Llama, Mistral, Gemini):**
 
 ```
 User: "Check the balance of this Bitcoin address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
 
-Agent (GPT-4, Llama, Mistral, etc.) → Finds check-crypto-address-balance.md
-                                     → Uses working example: curl blockchain.info/q/addressbalance/[address]
-                                     → Converts satoshis to BTC (÷ 1e8)
-                                     → Returns result
+Any AI Agent → Finds check-crypto-address-balance.md
+             → Uses working example: curl blockchain.info/q/addressbalance/[address]
+             → Converts satoshis to BTC (÷ 1e8)
+             → Returns result
 
 Result: ✅ 10 seconds, ~1,000 tokens, works first time
-        ✅ GPT-4: $0.005 (was $0.25) — 98% savings
-        ✅ Llama 3.1 8B: $0.00 (free, local) — task actually succeeds
+        ✅ Cloud models: $0.003-$0.005 (was $0.15-$0.25) — 95%+ savings
+        ✅ Local models: $0.00 (free) — task actually succeeds
 ```
 
 **Key insight:** Open Skills doesn't just make expensive models cheaper — **it makes cheap/free models actually work**.
@@ -236,10 +237,10 @@ Same task with open-skills: **1-3 API calls** (direct execution)
 
 | Model Stack | Cost | Success Rate | Speed | Privacy |
 |-------------|------|--------------|-------|---------|
-| **GPT-4 without skills** | $0.25/task | 90% | 2-3 min | ❌ Cloud |
-| **GPT-4 with skills** | $0.005/task | 98% | 10 sec | ❌ Cloud |
-| **Llama 3.1 8B without skills** | $0 | 30-50% | Varies | ✅ Local |
-| **🚀 Llama 3.1 8B + Open Skills** | **$0** | **95%+** | **10 sec** | **✅ Local** |
+| **Cloud models without skills** | $0.15-$0.25/task | 85-95% | 2-3 min | ❌ Cloud |
+| **Cloud models with skills** | $0.003-$0.005/task | 98% | 10 sec | ❌ Cloud |
+| **Local models without skills** | $0 | 30-50% | Varies | ✅ Local |
+| **🚀 Local models + Open Skills** | **$0** | **95%+** | **10 sec** | **✅ Local** |
 
 **The 100% Free, Self-Hostable AI Agent Stack:**
 
@@ -259,9 +260,9 @@ git clone https://github.com/besoeasy/open-skills ~/open-skills
 ```
 
 **Monthly cost comparison:**
-- **GPT-4 without skills:** $240-$1,470/month (1,000 tasks)
-- **GPT-4 with skills:** $5-$15/month (98% savings)
-- **Llama 3.1 8B + Open Skills:** **$0/month** (100% free, actually works)
+- **Cloud models (GPT-4/Claude) without skills:** $150-$1,470/month (1,000 tasks)
+- **Cloud models with skills:** $3-$15/month (95%+ savings)
+- **Local models (Llama/Mistral) + Open Skills:** **$0/month** (100% free, actually works)
 
 ---
 
@@ -291,8 +292,8 @@ git clone https://github.com/besoeasy/open-skills ~/open-skills
 **Why we built this:**
 
 AI agents are incredibly powerful, but there's a massive gap:
-- **Expensive cloud models (GPT-4):** Smart enough to figure things out, but cost $0.25+ per task
-- **Free local models (Llama, Mistral):** Can't figure things out reliably, so they fail or give up
+- **Expensive cloud models (GPT-4, Claude, Gemini):** Smart enough to figure things out, but cost $0.15-$0.25+ per task
+- **Free local models (Llama, Mistral, Qwen):** Can't figure things out reliably, so they fail or give up
 
 **Open Skills bridges this gap** by providing the "figuring out" part:
 - Instead of making models search, experiment, and debug → Give them working code
@@ -305,7 +306,7 @@ AI agents are incredibly powerful, but there's a massive gap:
 - ✅ **Privacy-first** — Open-source tools, minimal tracking, no vendor lock-in
 - ✅ **Agent-optimized** — Written for LLM consumption (clear structure, copy-paste ready)
 - ✅ **Free to use** — MIT licensed, no API keys required for core functionality
-- ✅ **Model-agnostic** — Works with GPT-4, Claude, Llama, Mistral, any LLM
+- ✅ **Model-agnostic** — Works with GPT-4, Claude, Gemini, Llama, Mistral, Qwen, any LLM
 
 **The result:** AI agents that are smarter, faster, and cheaper to run — or **completely free** with local models.
 

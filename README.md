@@ -2,7 +2,7 @@
 
 # Open Skills
 
-### Give any AI model execution-ready skills: run local at $0, or cut cloud costs by 95–98%.
+### Get AI agent skill definitions that cut token usage by 95–98%, lower model costs, and make smaller models reliable.
 
 [**MAIN INSTALLATION: USE THE WEBSITE QUICK START**](https://openskills.besoeasy.com/)
 
@@ -13,9 +13,9 @@
 [![Contributions](https://img.shields.io/badge/contributions-agent--friendly-orange.svg)](CONTRIBUTING.md)
 [![Telegram](https://img.shields.io/badge/community-Telegram-26A5E4.svg)](https://t.me/+FC8ppvnUsj8xM2Vl)
 
-Battle-tested, copy-paste skills for AI agents.  
+Battle-tested, copy-paste skill definitions for AI agents.  
 **Two ways to win:**  
-🏠 **Go 100% free:** Llama/Mistral/Qwen + Open Skills = cloud-level task execution at $0  
+🏠 **Go 100% free:** Ollama + Llama/Mistral/Qwen + Open Skills = cloud-level task execution at $0  
 💰 **Cut cloud spend by 95–98%:** GPT-4/Claude/Gemini + Open Skills = ~$0.003–$0.005/task instead of ~$0.15–$0.25
 
 </div>
@@ -115,7 +115,7 @@ Result: ✅ 10 seconds, ~1,000 tokens, works first time
         ✅ Local models: $0.00 (free) — task actually succeeds
 ```
 
-**Key insight:** Open Skills doesn't just make expensive models cheaper — **it makes cheap/free models actually work**.
+**Key insight:** Open Skills doesn't just make expensive models cheaper — **it helps low-powered and free models run tasks reliably with less hallucination**.
 
 ---
 

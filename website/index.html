@@ -876,13 +876,17 @@
         ];
 
         const featuresList = document.getElementById("features-list");
+        if (!featuresList) return;
+
+        const featureEmojis = ["🚀", "⚡", "🧠", "🔐", "💸", "🛠️", "🌍", "📦", "🎯", "🔥", "✅", "🤖"];
 
         // Helper to create feature element
         const createFeature = (feature) => {
+          const randomEmoji = featureEmojis[Math.floor(Math.random() * featureEmojis.length)];
           const div = document.createElement("div");
           div.className = "flex gap-4 items-start opacity-0 -translate-y-4 transition-all duration-1000 feature-item";
           div.innerHTML = `
-                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
+                    <span class="text-lg leading-none shrink-0 select-none">${randomEmoji}</span>
                     <div>
                         <span class="font-bold text-black mr-2">${feature.title}</span>
                         <span class="text-gray-600">${feature.description}</span>
@@ -899,7 +903,8 @@
 
         // Initial load: 4 random features
         const DISPLAY_COUNT = 4;
-        let currentFeatures = allFeatures.sort(() => 0.5 - Math.random()).slice(0, DISPLAY_COUNT);
+        const getInitialFeatures = () => [...allFeatures].sort(() => Math.random() - 0.5).slice(0, DISPLAY_COUNT);
+        let currentFeatures = getInitialFeatures();
         currentFeatures.forEach((feature, index) => {
           setTimeout(() => {
             featuresList.appendChild(createFeature(feature));
@@ -910,9 +915,13 @@
         setInterval(() => {
           if (document.hidden) return; // Pause if tab is hidden
 
-          // Pick a random feature
-          const randomFeature = allFeatures[Math.floor(Math.random() * allFeatures.length)];
+          // Pick a random feature not currently visible
+          const visibleTitles = new Set(currentFeatures.map((feature) => feature.title));
+          const candidates = allFeatures.filter((feature) => !visibleTitles.has(feature.title));
+          const nextFeaturePool = candidates.length ? candidates : allFeatures;
+          const randomFeature = nextFeaturePool[Math.floor(Math.random() * nextFeaturePool.length)];
           const newFeature = createFeature(randomFeature);
+          currentFeatures = [randomFeature, ...currentFeatures].slice(0, DISPLAY_COUNT);
 
           // Add to front
           featuresList.prepend(newFeature);

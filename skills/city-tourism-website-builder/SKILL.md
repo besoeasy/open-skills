@@ -14,6 +14,8 @@ This skill enables the creation of professional city tourism websites featuring:
 - Modern, colorful designs with white backgrounds
 - Smooth animations and hover effects
 - Responsive layouts for all devices
+- Interactive OpenStreetMap centered on the city
+- Optional map snapshot download as PNG
 - IPFS hosting for permanent availability
 
 ## Workflow
@@ -78,11 +80,16 @@ websearch query="CITY_NAME best time to visit how to reach"
    - Grid layout
    - Key statistics
 
-5. **Visual Gallery**
+5. **Interactive City Map**
+   - OpenStreetMap map centered on city coordinates
+   - Marker in city center with popup details
+   - "Download Map PNG" action
+
+6. **Visual Gallery**
    - Colorful placeholder grid
    - Hover zoom effects
 
-6. **Footer**
+7. **Footer**
    - Navigation links
    - Copyright
 
@@ -111,6 +118,75 @@ IntersectionObserver for fade-in effects
 - Navbar hide/show on scroll
 - Intersection Observer for reveal animations
 - Mobile-responsive menu
+- Interactive OpenStreetMap (Leaflet)
+- City-center marker and popup
+- Download map image as PNG (with fallback)
+
+### 4.1 OpenStreetMap integration (required)
+
+Use free OpenStreetMap tiles through Leaflet.
+
+```html
+<!-- In <head> -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- In body -->
+<section id="map" aria-label="City map section">
+   <h2>Explore the City Map</h2>
+   <div id="cityMap" style="height: 420px; border-radius: 16px;"></div>
+   <button id="downloadMapBtn" type="button" aria-label="Download Map PNG">Download Map PNG</button>
+</section>
+```
+
+```javascript
+// Example city center (replace per city)
+const city = {
+   name: 'Kathua',
+   lat: 32.3693,
+   lon: 75.5254,
+   zoom: 12
+};
+
+const map = L.map('cityMap').setView([city.lat, city.lon], city.zoom);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+   maxZoom: 19,
+   attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+L.marker([city.lat, city.lon])
+   .addTo(map)
+   .bindPopup(`${city.name} City Center`)
+   .openPopup();
+```
+
+### 4.2 Download map as PNG (if possible)
+
+Client-side PNG export from interactive tiles can fail in some browsers due to canvas/CORS restrictions.
+
+**Reliable fallback (recommended):** download a static PNG from the free OSM static map endpoint.
+
+```javascript
+document.getElementById('downloadMapBtn').addEventListener('click', () => {
+   const url = `https://staticmap.openstreetmap.de/staticmap.php?center=${city.lat},${city.lon}&zoom=${city.zoom}&size=1280x720&markers=${city.lat},${city.lon},red-pushpin`;
+   const link = document.createElement('a');
+   link.href = url;
+   link.download = `${city.name.toLowerCase().replace(/\s+/g, '-')}-map.png`;
+   link.click();
+});
+```
+
+**CLI option (same free endpoint):**
+
+```bash
+CITY_LAT="32.3693"
+CITY_LON="75.5254"
+CITY_NAME="kathua"
+
+curl -fsS "https://staticmap.openstreetmap.de/staticmap.php?center=${CITY_LAT},${CITY_LON}&zoom=12&size=1280x720&markers=${CITY_LAT},${CITY_LON},red-pushpin" \
+   -o "${CITY_NAME}-map.png"
+```
 
 ### 5. Example Implementation
 
@@ -124,6 +200,8 @@ city-website.html
 ├── Timeline with alternating layout
 ├── Places grid with category badges
 ├── Facts section with large numbers
+├── Interactive OpenStreetMap section (city-centered)
+├── Download Map PNG button
 ├── Gallery grid with color blocks
 └── Dark footer
 ```
@@ -188,6 +266,7 @@ curl -fsS -X POST -F "file=@city-website.html" https://filedrop.besoeasy.com/upl
    - Mobile-first approach
    - Responsive grids
    - Touch-friendly interactions
+   - Map container sized for mobile and desktop
 
 3. **Performance**
    - Minimize external dependencies
@@ -198,11 +277,17 @@ curl -fsS -X POST -F "file=@city-website.html" https://filedrop.besoeasy.com/upl
    - Semantic HTML structure
    - ARIA labels where needed
    - Keyboard navigation support
+   - Map controls remain keyboard reachable
 
 5. **Content Quality**
    - Engaging copy
    - Accurate information
    - Local context and flavor
+
+6. **Map Quality**
+   - Keep city marker exactly at city center coordinates
+   - Include attribution for OpenStreetMap contributors
+   - Prefer static-map fallback for guaranteed PNG download
 
 ## Variations
 

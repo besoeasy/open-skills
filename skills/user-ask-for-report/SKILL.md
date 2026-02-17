@@ -1,5 +1,5 @@
 ---
-name: user-aks-for-report
+name: user-ask-for-report
 description: Generate a clean white Tailwind CDN report page from user content, optionally password-gate viewing via client-side decryption, and deploy to Originless/IPFS.
 ---
 

@@ -251,7 +251,7 @@
               <code
                 id="skill-content"
                 class="block text-xs sm:text-sm text-gray-300 font-mono overflow-x-auto overflow-y-hidden whitespace-pre hide-scrollbar pr-2 leading-relaxed transition-[max-height] duration-300 max-h-16"
-                >Loading skill.txt...</code
+                >Loading prompt.txt...</code
               >
               <div class="flex items-center gap-1.5 shrink-0">
                 <button
@@ -680,7 +680,7 @@
     </footer>
 
     <script>
-      let skillContentText = "curl -S https://openskills.besoeasy.com/skill.txt";
+      let skillContentText = "curl -S https://openskills.besoeasy.com/prompt.txt";
       let isSkillCollapsed = true;
 
       function updateSkillContentVisibility() {
@@ -717,14 +717,14 @@
         if (!skillContentEl) return;
 
         try {
-          const response = await fetch("https://openskills.besoeasy.com/skill.txt");
+          const response = await fetch("https://openskills.besoeasy.com/prompt.txt");
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
           const text = await response.text();
           skillContentText = text.trim() || skillContentText;
           skillContentEl.textContent = skillContentText;
         } catch (error) {
-          skillContentEl.textContent = "Failed to load skill.txt. Run: curl -S https://openskills.besoeasy.com/skill.txt";
+          skillContentEl.textContent = "Failed to load prompt.txt. Run: curl -S https://openskills.besoeasy.com/prompt.txt";
         }
 
         updateSkillContentVisibility();

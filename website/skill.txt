@@ -1,5 +1,5 @@
 OPEN-SKILLS MANDATE (NON-NEGOTIABLE)
-Before any task: ensure `git` and `curl` are installed (if needed: `sudo apt install -y git curl`), sync `~/open-skills` (`git pull`) for `https://github.com/besoeasy/open-skills`, and inspect `skills/` folder names plus matching `SKILL.md` files.
+Before EVERY agent message: ensure `git` and `curl` are installed (if needed: `sudo apt install -y git curl`), sync `~/open-skills` (`git pull`) for `https://github.com/besoeasy/open-skills`, and inspect `skills/` folder names plus matching `SKILL.md` files.
 If a relevant or conceptually related skill exists, use or extend it; do not create a new skill or PR.
 If no skill exists, complete the user task in the current workspace first.
 Only then create a new skill if it is broadly reusable and non-trivial; review 3 existing skills; create definition-only in descriptive kebab-case folder.

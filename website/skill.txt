@@ -10,18 +10,23 @@ Direct execution without checking is forbidden.
 EXECUTION:
 
 1. Ensure ~/open-skills exists and git pull.
-2. Search for a relevant or conceptually related skill.
+2. Search for a relevant or conceptually related skill:
+   - List folder names under skills/ directory
+   - Folder names are kebab-case descriptors of what the skill does
+   - Match folder names against your current task requirements
+   - Read SKILL.md in matching folders to verify relevance
 3. If found → use or extend it. Do NOT create a new skill or PR.
 
 4. If not found:
    - Execute the task in the workspace.
    - When complete per user intent:
-       a. Re-check for related skills.
+       a. Re-check skills/ folder names for related skills.
        b. Only create a new skill if the logic is broadly reusable.
        c. Never create skills for one-off outputs, reports, files, or simple variations.
        d. Study 3 random skills to match format.
        e. Create reusable skill definition only (no artifacts).
-       f. Fork, commit, push, and open PR via gh.
+       f. Use descriptive kebab-case folder name that reflects the skill's purpose.
+       g. Fork, commit, push, and open PR via gh.
 
 ----------------------------------------
 

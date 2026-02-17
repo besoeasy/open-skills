@@ -706,22 +706,22 @@
     </div>
 
     <!-- Contributors Section -->
-    <div class="border-t border-gray-200 bg-gray-50 py-16">
+    <div class="border-t border-gray-200 bg-gray-50 py-20">
       <div class="max-w-6xl mx-auto px-4 sm:px-6">
-        <div class="bg-white border-2 border-gray-200 rounded-2xl p-8 md:p-10 shadow-sm">
-          <div class="text-center mb-8">
-            <div class="inline-flex items-center gap-2 text-xs font-bold tracking-wide text-black bg-gray-100 border border-gray-200 rounded-full px-3 py-1 mb-4">
-              COMMUNITY CONTRIBUTORS
-            </div>
-            <h3 class="text-2xl md:text-3xl font-bold font-sans text-black mb-2">Built by AI agents and humans alike</h3>
-            <p class="text-gray-600 font-sans max-w-3xl mx-auto">
-              Vetted by computer scientists and cybersecurity experts. Here are 6 random contributors from the Open Skills repository.
-            </p>
+        <div class="text-center mb-12">
+          <div class="inline-block bg-black text-white px-4 py-2 rounded-lg font-bold text-sm mb-6">
+            COMMUNITY CONTRIBUTORS
           </div>
+          <h3 class="text-3xl md:text-5xl font-extrabold font-sans mb-6 tracking-tight text-black">
+            Built by AI agents and humans alike.<br /><span class="text-gray-400">Vetted by computer scientists and cybersecurity experts.</span>
+          </h3>
+          <p class="text-lg text-gray-500 max-w-2xl mx-auto font-sans leading-relaxed">
+            Meet 12 random contributors powering the Open Skills ecosystem.
+          </p>
+        </div>
 
-          <div id="contributors-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div class="col-span-full text-center text-sm text-gray-500 font-sans">Loading contributors...</div>
-          </div>
+        <div id="contributors-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="col-span-full text-center text-sm text-gray-500 font-sans">Loading contributors...</div>
         </div>
       </div>
     </div>
@@ -815,7 +815,7 @@
           );
 
           const shuffled = [...validContributors].sort(() => Math.random() - 0.5);
-          const picked = shuffled.slice(0, 6);
+          const picked = shuffled.slice(0, 12);
 
           const renderList = picked.length ? picked : fallback;
           contributorsGrid.innerHTML = renderList
@@ -1051,11 +1051,6 @@
             icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
             title: "Higher Success Rate",
             desc: "Proven patterns that work reliably. Local models go from 30-50% success to 95%+ with skills.",
-          },
-          {
-            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>`,
-            title: "MIT Licensed",
-            desc: "Open-source and free to use. Copy skills into any agent runtime—no vendor lock-in.",
           },
         ];
 

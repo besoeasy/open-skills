@@ -40,6 +40,9 @@ CREATE TABLE IF NOT EXISTS file_changes (
 CREATE INDEX idx_file_path ON file_changes(file_path);
 CREATE INDEX idx_timestamp ON file_changes(timestamp);
 CREATE INDEX idx_action ON file_changes(action);
+
+-- Automatic purge: delete records older than 1 year
+DELETE FROM file_changes WHERE created_at < datetime('now', '-1 year');
 ```
 
 **Fields:**
@@ -92,8 +95,16 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Initialize on import
+def purge_old_changes():
+    """Delete file change records older than 1 year to keep the database size sane."""
+    conn = sqlite3.connect(str(DB_PATH))
+    conn.execute("DELETE FROM file_changes WHERE created_at < datetime('now', '-1 year')")
+    conn.commit()
+    conn.close()
+
+# Initialize on import and purge old records
 init_db()
+purge_old_changes()
 ```
 
 **Log file changes:**

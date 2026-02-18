@@ -38,6 +38,9 @@ CREATE TABLE IF NOT EXISTS messages (
 CREATE INDEX idx_timestamp ON messages(timestamp);
 CREATE INDEX idx_session ON messages(session_id);
 CREATE INDEX idx_sender ON messages(sender);
+
+-- Automatic purge: delete records older than 1 year
+DELETE FROM messages WHERE created_at < datetime('now', '-1 year');
 ```
 
 **Fields:**
@@ -85,8 +88,16 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Initialize on import
+def purge_old_messages():
+    """Delete messages older than 1 year to keep the database size sane."""
+    conn = sqlite3.connect(str(DB_PATH))
+    conn.execute("DELETE FROM messages WHERE created_at < datetime('now', '-1 year')")
+    conn.commit()
+    conn.close()
+
+# Initialize on import and purge old records
 init_db()
+purge_old_messages()
 ```
 
 **Log messages:**

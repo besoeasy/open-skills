@@ -1,5 +1,3 @@
-<div align="center">
-
 # Open Skills
 
 ## Teach your AI Agent Must-Have Skills — Save 98% of API Calls
@@ -25,8 +23,6 @@ Battle-tested, copy-paste execution playbooks for AI agents.
 🏠 **Go 100% free** — Ollama + Llama/Mistral/Qwen + Open Skills = cloud-level practical task execution at **$0**
 
 💰 **Keep cloud quality, slash cloud cost** — GPT-4/Claude/Gemini + Open Skills = **~$0.003–$0.005/task** instead of **~$0.15–$0.25**
-
-</div>
 
 ---
 
@@ -60,6 +56,7 @@ Battle-tested, copy-paste execution playbooks for AI agents.
 **The Game-Changer:** 🚀 **Make local models as capable as cloud models**
 
 Instead of paying models to figure everything out from scratch, **give them proven execution playbooks**:
+
 - Llama 3.1 / Mistral / Qwen (free, local) + Open Skills → performs like GPT-4/Claude for practical tasks
 - **Result: $0 cost, 100% self-hostable, complete privacy**
 
@@ -75,7 +72,6 @@ Instead of paying models to figure everything out from scratch, **give them prov
 - 🧠 **Self-improving ecosystem** — Community skills flow back into the repository automatically
 - 🏆 **Public credit** — Contributors get GitHub commit history and recognition
 - 🔍 **Zero search API costs** — Use free SearXNG instances instead of paying for Brave Search ($5/1000), Google Search API, or Bing API
-
 
 ## Real-World Example
 
@@ -250,12 +246,12 @@ Same task with open-skills: **1-3 API calls** (direct execution)
 
 **The Real Game-Changer:** Open Skills makes local models competitive with GPT-4 for practical tasks.
 
-| Model Stack | Cost | Success Rate | Speed | Privacy |
-|-------------|------|--------------|-------|---------|
-| **Cloud models without skills** | $0.15-$0.25/task | 85-95% | 2-3 min | ❌ Cloud |
-| **Cloud models with skills** | $0.003-$0.005/task | 98% | 10 sec | ❌ Cloud |
-| **Local models without skills** | $0 | 30-50% | Varies | ✅ Local |
-| **🚀 Local models + Open Skills** | **$0** | **95%+** | **10 sec** | **✅ Local** |
+| Model Stack                       | Cost               | Success Rate | Speed      | Privacy      |
+| --------------------------------- | ------------------ | ------------ | ---------- | ------------ |
+| **Cloud models without skills**   | $0.15-$0.25/task   | 85-95%       | 2-3 min    | ❌ Cloud     |
+| **Cloud models with skills**      | $0.003-$0.005/task | 98%          | 10 sec     | ❌ Cloud     |
+| **Local models without skills**   | $0                 | 30-50%       | Varies     | ✅ Local     |
+| **🚀 Local models + Open Skills** | **$0**             | **95%+**     | **10 sec** | **✅ Local** |
 
 **The 100% Free, Self-Hostable AI Agent Stack:**
 
@@ -275,6 +271,7 @@ git clone https://github.com/besoeasy/open-skills ~/open-skills
 ```
 
 **Monthly cost comparison:**
+
 - **Cloud models (GPT-4/Claude) without skills:** $150-$1,470/month (1,000 tasks)
 - **Cloud models with skills:** $3-$15/month (95%+ savings)
 - **Local models (Llama/Mistral) + Open Skills:** **$0/month** (100% free, actually works)
@@ -301,16 +298,17 @@ git clone https://github.com/besoeasy/open-skills ~/open-skills
 - 🔐 **Privacy-conscious projects** — All skills use open-source tools and public APIs, run entirely offline
 - 💰 **Cost-sensitive teams** — Reduce AI agent costs by 98% or go completely free with local models
 
-
 ## Philosophy
 
 **Why we built this:**
 
 AI agents are incredibly powerful, but there's a massive gap:
+
 - **Expensive cloud models (GPT-4, Claude, Gemini):** Smart enough to figure things out, but cost $0.15-$0.25+ per task
 - **Free local models (Llama, Mistral, Qwen):** Can't figure things out reliably, so they fail or give up
 
 **Open Skills bridges this gap** by providing the "figuring out" part:
+
 - Instead of making models search, experiment, and debug → Give them working code
 - Instead of requiring high intelligence → Provide pre-tested patterns
 - Result: **Cheap models execute like expensive models**
@@ -324,4 +322,3 @@ AI agents are incredibly powerful, but there's a massive gap:
 - ✅ **Model-agnostic** — Works with GPT-4, Claude, Gemini, Llama, Mistral, Qwen, any LLM
 
 **The result:** AI agents that are smarter, faster, and cheaper to run — or **completely free** with local models.
-

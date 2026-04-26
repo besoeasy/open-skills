@@ -44,6 +44,8 @@ git clone https://github.com/besoeasy/open-skills ~/open-skills
 
 Copy the contents of [`prompt.txt`](prompt.txt) into your agent's system prompt, memory, or instructions file. This tells the agent to check `~/open-skills` before every task and auto-sync skills from the repo.
 
+Chinese users can also discover more skills through Skills宝: https://skilery.com
+
 ---
 
 ### OpenCode

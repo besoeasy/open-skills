@@ -131,6 +131,33 @@ journalctl --user -u zeroclaw.service --no-pager | grep -iE "mcp|skills" | tail
 ```
 Note: on CPU-only local models (e.g. `qwen2.5-coder:7b`), the agent loop is very slow — a simple prompt can take minutes. The tooling works; throughput is model-bound.
 
+## 7. Switch the bot to a cloud model provider (OpenRouter)
+
+Provider instances live at `providers.models.<provider>.<instance>` (e.g. `ollama.olla1`), referenced from `agents.<agent>.model_provider`.
+
+**Config:**
+```bash
+zeroclaw config set providers.models.openrouter.or1.model openai/gpt-4.1-mini --no-interactive
+zeroclaw config set providers.models.openrouter.or1.api_key sk-or-v1-... --no-interactive   # stored encrypted (enc2:)
+zeroclaw config set providers.models.openrouter.or1.max_tokens 8192 --no-interactive       # cap output budget
+zeroclaw config set agents.zeroclaw.model_provider openrouter.or1 --no-interactive
+zeroclaw models refresh --model-provider openrouter.or1   # expect "ok" + catalog fetched
+systemctl --user restart zeroclaw.service && sleep 8
+```
+
+**Key gotchas (learned the hard way):**
+- Validate keys with a REAL chat completion, not `GET /v1/models` — OpenRouter's model list is public and returns 200 even with a bogus key (false positive). A real call is `POST /api/v1/chat/completions` with `Authorization: Bearer <key>`; 401 = bad key, 402 = valid key but no credits.
+- Key-prefix validation: zeroclaw rejects `sk-proj-...` keys when the provider is `openrouter`. Use a matching key (OpenRouter = `sk-or-...`) or configure as an `openai` provider with `uri = "https://openrouter.ai/api/v1"` (OpenRouter is OpenAI-compatible). The latter skips live catalog refresh ("live model listing is not supported") but still serves requests.
+- `402 Payment Required` on first call with "can only afford N tokens": the default `max_tokens` is 65536. Cap it (e.g. 8192) or have the user add credits.
+- Key prefix mismatch on refresh says "looks like a openai key ... Set the correct provider-specific env var" — that's the validation gate, not a network fault.
+
+**Switch the companion app (Odysseus) to the same provider** (it discovers local ollama and falls back to it when its settings are empty):
+1. Add the endpoint via its own ORM (mirrors the UI's create path; API keys are Fernet-encrypted at rest via `data/.app_key`):
+   `src.database.SessionLocal` + `ModelEndpoint(id=uuid4()[:8], name="OpenRouter", base_url="https://openrouter.ai/api/v1", api_key=KEY, is_enabled=True, endpoint_kind="api", cached_models=json.dumps(["openai/gpt-4.1-mini"]), pinned_models=..., supports_tools=True, owner=None)`.
+2. Point its settings (`data/settings.json`) at the endpoint id: `default_endpoint_id`/`default_model`, `research_*`, `task_*`, `utility_*`, `vision_model`, `default_model_fallbacks=[{endpoint_id, model}]`, `teacher_model="<model>@<EndpointName>"`.
+3. Check per-user prefs don't override: `data/user_prefs.json` `_users.<name>` whitelisted keys beat globals.
+4. Restart `odysseus-ui.service`; verify with the app's own resolver: `resolve_endpoint("default", ...)` returns the OpenRouter chat URL.
+
 ## Troubleshooting
 
 **Symptom: `zeroclaw channel send --channel-id telegram` fails with 401 Unauthorized**

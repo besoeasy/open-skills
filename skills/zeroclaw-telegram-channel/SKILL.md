@@ -87,6 +87,50 @@ journalctl --user -u zeroclaw.service --no-pager | grep -iE "telegram|bind|pair"
 
 Then message the bot from Telegram; the agent should reply without a bind prompt.
 
+## 6. Equip the bot with MCP servers, skill bundles, and media tools
+
+An agent is granted tools/skills explicitly — omissions are NOT grants.
+
+**Wire external MCP servers (e.g. an external app's stdio servers):**
+```bash
+# 1. Register each server (element must exist before its props resolve)
+curl -s -X POST "http://127.0.0.1:42617/api/config/map-key?path=mcp.servers&key=my_server" -H "Authorization: Bearer zc_selftest" -d '{}'
+# 2. Set command + args (env map may need a direct config.toml edit — CLI routing quirk)
+zeroclaw config set mcp.servers.my_server.command /usr/bin/python3 --no-interactive
+zeroclaw config set mcp.servers.my_server.args '["/opt/app/server.py"]' --no-interactive
+# 3. env block, e.g. owner scope + PYTHONPATH:
+#    env = { ODYSSEUS_MCP_MEMORY_OWNER = "admin", PYTHONPATH = "/opt/app" }
+# 4. Create an mcp_bundle and grant it — WITHOUT this the agent gets NO servers:
+zeroclaw config set mcp_bundles.mybundle.servers '["my_server"]' --no-interactive
+zeroclaw config set agents.<agent>.mcp_bundles '["mybundle"]' --no-interactive
+```
+`mcp.servers` is serialized as `[[mcp.servers]]` tables with `name`; the env map sometimes must be added directly in `~/.zeroclaw/config.toml`.
+
+**Curate a skill bundle:**
+```bash
+zeroclaw skills bundle add bot          # creates ~/.zeroclaw/shared/skills/bot/
+cp -r ~/open-skills/skills/<name> ~/.zeroclaw/shared/skills/bot/   # repeat per skill
+zeroclaw config set agents.zeroclaw.skill_bundles '["bot"]' --no-interactive
+```
+Skills load on demand when `[skills] prompt_injection_mode = "compact"` (default keeps context small).
+
+**Enable image/TTS/STT tools:**
+```bash
+zeroclaw config set image_gen.enabled true --no-interactive      # needs FAL_API_KEY
+zeroclaw config set tts.enabled true --no-interactive            # needs an OpenAI-compatible TTS key
+zeroclaw config set transcription.enabled true --no-interactive  # Groq/OpenAI/local-whisper
+```
+These tools are lazy — enabling without a key is harmless; calls just error until a key exists.
+
+**Verify:**
+```bash
+systemctl --user restart zeroclaw.service && sleep 8
+cat ~/.zeroclaw/state/daemon_state.json | python3 -c "import json,sys; d=json.load(sys.stdin); [print(k,'->',c.get('status')) for k,c in d['components'].items()]"
+journalctl --user -u zeroclaw.service --no-pager | grep -iE "mcp|skills" | tail
+# MCP servers spawn on first agent request; check runtime-trace.jsonl for mcp_client activity.
+```
+Note: on CPU-only local models (e.g. `qwen2.5-coder:7b`), the agent loop is very slow — a simple prompt can take minutes. The tooling works; throughput is model-bound.
+
 ## Troubleshooting
 
 **Symptom: `zeroclaw channel send --channel-id telegram` fails with 401 Unauthorized**

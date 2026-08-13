@@ -79,10 +79,10 @@ Key facts:
 
 ### 3. Content + engagement loop
 
-- Draft posts with a local model (ollama OpenAI-compatible endpoint: `POST {OLLAMA_URL}/chat/completions` with `{model:"qwen2.5:1.5b", messages:[...]}`).
+- Draft posts with a local model (ollama OpenAI-compatible endpoint: `POST {OLLAMA_URL}/v1/chat/completions` — note the `/v1` — with `{"model":"qwen2.5:1.5b","messages":[...],"stream":false}`; read the draft from `choices[0].message.content`). Health-check ollama with `GET {OLLAMA_URL}/api/tags`.
 - Posting cadence: a minute-level cron tick that (a) fires due jobs, then (b) tops up the next 24h to `POSTS_PER_DAY` slots.
 - Engagement: poll `GET PAGE_ID/feed?fields=comments.limit(10){id,message,from,created_time}`, reply once per unseen comment, track seen ids in a JSON store.
-- **Always support a DRY_RUN mode** (`DRY_RUN=true`) so the whole pipeline runs and is testable before real credentials exist.
+- **Always support a DRY_RUN mode** (`DRY_RUN=true`) so the whole pipeline runs and is testable before real credentials exist. Verify top-up idempotency: running the tick twice must schedule `0` additional posts (persist `scheduled`/`fired` flags per post, not just a published list).
 
 ### 4. Monetization focus
 

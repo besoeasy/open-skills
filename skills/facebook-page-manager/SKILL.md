@@ -98,6 +98,7 @@ const sched = await graph(`${pageId}/scheduled_posts`, { fields: "id,created_tim
 - **System users often cannot reply to existing comments** (`error 100 subcode 33 "does not support this operation"`) even with `pages_manage_engagement` — while creating a new comment on a post works. Make the reply loop resilient (try/catch per comment, mark seen, log and continue) so one failure doesn't halt the poll.
 - **Scheduling unit bug**: `scheduled_publish_time` is unix *seconds*. If you build times as `Date.now() + step` where `step` is in seconds, posts get scheduled ~40s ahead and flood the page every minute. Convert: `Math.floor(Date.now() / 1000) + stepSeconds`.
 - **Stale dry-run posts block live scheduling**: after running in dry-run, the local store holds fake `post_1`-style scheduled entries that never exist on Facebook. `topUp()` counts them as filled slots and never schedules real posts. On each live tick, reconcile against `GET /{page}/scheduled_posts` and drop local scheduled entries that aren't real.
+- **Overlapping scheduler ticks double-schedule**: if the tick (content generation + API calls) takes longer than the cron interval, two ticks run concurrently and both see "missing slots" → posts get scheduled a minute apart. Guard the tick with a `running` flag (async mutex), and count open slots from the live `/scheduled_posts` list rather than the local store.
 - **Always ship a `DRY_RUN` mode** so the whole pipeline runs and is testable before any credentials exist.
 
 ## Minimal agent loop (Node.js)

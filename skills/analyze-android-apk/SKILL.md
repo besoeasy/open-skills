@@ -87,6 +87,12 @@ echo "== Permissions =="
 grep -oE 'android:name="android.permission.[A-Z_]+"' "$M" | sort -u
 echo "== Activities =="
 grep -oE 'android:name="[^"]*Activity"' "$M" | sort -u
+# Verify the signing certificate (weak crypto, self-signing, validity window)
+keytool -printcert -jarfile "$APK" 2>/dev/null || {
+  unzip -o -q "$APK" "META-INF/*.RSA" -d /tmp/apk-work/meta
+  keytool -printcert -file "$(ls /tmp/apk-work/meta/META-INF/*.RSA | head -1)"
+}
+
 echo "== Hardcoded URLs =="
 grep -rEoh 'https?://[a-zA-Z0-9./_?=&-]+' "$OUT/sources" 2>/dev/null | sort | uniq -c | sort -rn | head -20
 ```
@@ -114,7 +120,8 @@ Report these fields to the user:
 - `permissions_notable`: dangerous/system-level permissions worth flagging
 - `sdks`: third-party SDKs found under `sources/com/*` (analytics, ads, web kernels)
 - `endpoints`: table of hardcoded URLs/IPs and likely purpose
-- `risk_notes`: plaintext HTTP, hardcoded IPs, self-update/install permissions, telemetry SDKs
+- `signing_cert`: owner/issuer, validity window, algorithm; flag SHA1 signatures or RSA keys < 2048 bits as weak, and self-signed certs
+- `risk_notes`: plaintext HTTP, hardcoded IPs, self-update/install permissions, telemetry SDKs, weak signing crypto
 - Error shape: if decompile fails entirely, quote last lines of the jadx log + suggest `--no-res` retry
 
 ## Rate limits / Best practices

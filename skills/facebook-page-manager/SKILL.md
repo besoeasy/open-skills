@@ -1,138 +1,208 @@
 ---
 name: facebook-page-manager
-description: "Build an autonomous Facebook page management agent in Node.js using the Graph API (content generation, scheduling, comment auto-replies, analytics, monetization readiness), plus the developer-app/token setup flow. Use when the user wants to automate or monetize a Facebook page."
+description: "Build and deploy an autonomous Facebook page agent in Node.js (Graph API posting, scheduling, comment replies, analytics, monetization tracking) and take it from dry-run to live production. Use when the user wants to automate, grow, or monetize a Facebook page with minimal human involvement."
 ---
 
 # Facebook Page Manager Agent
 
 Builds a standalone Node.js agent that manages a Facebook page: AI-drafted content,
-scheduled posting cadence, comment auto-replies, analytics, and monetization
-readiness tracking, controllable from Telegram.
+scheduled posting cadence, comment auto-replies, analytics, and monetization-gate
+tracking. Covers the credential setup, the Graph API pitfalls that block "going
+live", and deploying it as a long-running service so it runs without human help.
 
 ## When to use
 
 - User asks to "build a Facebook agent / automate a Facebook page / grow a page"
-- User wants page management, scheduling, or comment auto-replies
-- User wants monetization tracking or strategy for a page (Reels watch time, in-stream ads, subscribers)
+- User wants scheduled posting, comment auto-replies, or monetization tracking
+- User asks to make the agent "run on its own / continue without our help"
+- Taking an existing dry-run Facebook agent into production
 
 ## Required tools / APIs
 
-- **Facebook Graph API** (free): page posting, scheduling, comments, insights. Requires a Facebook Developer app + user token.
+- **Facebook Graph API** (free): page posting, scheduling, comments, insights. Requires a Facebook Developer app + token.
+- **System User token** (free, recommended for autonomy): never expires. Created in Business Manager.
 - **Local LLM via ollama** (free, optional): content drafting. Any OpenAI-compatible endpoint works.
-- **Telegraf** (free): optional Telegram control bot: `npm install telegraf`
-- **node-cron** (free): scheduler tick: `npm install node-cron`
+- **node-cron / telegraf** (free): scheduler + optional Telegram control.
 
 ```bash
-npm install telegraf node-cron dotenv
+npm install node-cron telegraf dotenv
 ```
 
-## Skills
+## Credential setup (the 90% blocker)
 
-### 1. Set up credentials (the 90% blocker)
+For an agent that runs unattended, use a **System User token** because it never
+expires (regular user tokens die in ~60 days; Explorer tokens die in hours).
 
-1. Create a developer app at https://developers.facebook.com → My Apps → Create App → Business type. Add the **Facebook Login** product.
-2. Grant the user token these permissions (work for pages you administer, no app review needed): `pages_show_list`, `pages_manage_posts`, `pages_read_engagement`, `pages_manage_engagement`, `read_insights`.
-3. Get a token in the **Graph API Explorer** (select your app → permissions → Generate Access Token).
-4. Exchange for a long-lived token (60 days) in a browser:
+1. Create a developer app at https://developers.facebook.com → My Apps → Create App → Business. Add the **Facebook Login** product. Keep it in **Development mode**.
+2. Create a system user: https://business.facebook.com/settings/system-users → Create → Generate New Token → select your app.
+3. Select **all** these permissions (each is needed):
+   - `pages_show_list` — list pages
+   - `pages_read_engagement` — read posts
+   - `pages_manage_posts` — post / schedule
+   - `pages_manage_engagement` — comment replies
+   - `pages_read_user_content` — read comment text
+   - `read_insights` — analytics metrics
+4. Assign the page to the system user (Business Settings → System Users → user → Assign assets → the page).
+5. Verify with the debug endpoint:
+   ```bash
+   curl -s "https://graph.facebook.com/v21.0/debug_token?input_token=TOKEN&access_token=TOKEN"
    ```
-   https://graph.facebook.com/v21.0/oauth/access_token?grant_type=fb_exchange_token&client_id=APP_ID&client_secret=APP_SECRET&fb_exchange_token=USER_TOKEN
-   ```
-5. Page ID is under the page's **About** tab (or resolve via `GET /me/accounts`).
+   Confirm `type: SYSTEM_USER`, `expires_at: 0`, and all 6 scopes present.
 
-### 2. Graph API client (Node.js)
+## Graph API client (Node.js)
 
 ```javascript
 const BASE = "https://graph.facebook.com/v21.0";
-const TOKEN = process.env.FB_USER_TOKEN;
+let userToken = process.env.FB_USER_TOKEN;   // system user token
+let pageToken = null;
 
-async function graph(path, params = {}, method = "GET") {
+async function pageTokenFor(pageId) {
+  if (pageToken) return pageToken;
+  const res = await fetch(`${BASE}/me/accounts?fields=id,access_token&access_token=${userToken}`);
+  const data = await res.json();
+  pageToken = data.data.find((p) => String(p.id) === String(pageId))?.access_token;
+  if (!pageToken) throw new Error("page not linked to this token");
+  return pageToken;
+}
+
+async function graph(path, params = {}, method = "GET", token = userToken) {
   const url = new URL(`${BASE}/${path}`);
   if (method === "GET") Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-  url.searchParams.set("access_token", TOKEN);
+  url.searchParams.set("access_token", token);
   const opts = { method };
-  if (method !== "GET") {
-    opts.headers = { "Content-Type": "application/json" };
-    opts.body = JSON.stringify({ ...params, access_token: TOKEN });
-  }
+  if (method !== "GET") { opts.headers = { "Content-Type": "application/json" }; opts.body = JSON.stringify({ ...params, access_token: token }); }
   const res = await fetch(url, opts);
   const data = await res.json();
   if (data.error) throw new Error(`Graph API ${data.error.code}: ${data.error.message}`);
   return data;
 }
 
-// list pages
-const pages = await graph("me/accounts", { fields: "id,name,access_token" });
-// post text
-await graph("PAGE_ID/feed", { message: "hello" }, "POST");
-// schedule (published:false + unix seconds)
-await graph("PAGE_ID/feed", { message: "later", published: false, scheduled_publish_time: 1786500000 }, "POST");
-// comment replies (needs pages_manage_engagement)
-await graph("COMMENT_ID/replies", { message: "Thanks!" }, "POST");
-// insights (cumulative day-period values)
-await graph("PAGE_ID/insights", { metric: "page_fans,page_impressions,page_engaged_users,page_video_views", period: "day" });
+// read posts (use /posts, NOT /feed — see gotchas)
+const feed = await graph(`${pageId}/posts`, { limit: 25, fields: "id,message,created_time,comments.limit(10){id,message,created_time}" }, "GET", await pageTokenFor(pageId));
+// schedule a post (unix SECONDS, published:false)
+await graph(`${pageId}/feed`, { message, published: false, scheduled_publish_time: Math.floor(Date.now() / 1000) + 8 * 3600 }, "POST", await pageTokenFor(pageId));
+// reply to a comment
+await graph(`${commentId}/replies`, { message }, "POST", await pageTokenFor(pageId));
+// insights
+await graph(`${pageId}/insights`, { metric: "page_fans,page_impressions,page_engaged_users,page_video_views", period: "day" }, "GET", await pageTokenFor(pageId));
+// current scheduled posts (ground truth for reconciliation)
+const sched = await graph(`${pageId}/scheduled_posts`, { fields: "id,created_time" }, "GET", await pageTokenFor(pageId));
 ```
 
-Key facts:
-- Page-scoped tokens (`/PAGE_ID?fields=access_token` or from `/me/accounts`) don't expire for pages you administer; the user token lasts ~60 days.
-- `scheduled_publish_time` is **unix seconds**, not ms.
-- Errors come back as `{error:{code,message}}`; 190 = expired token, 200 = missing permission, 429 = rate limit (retry with backoff).
+## Production gotchas (learned the hard way)
 
-### 3. Content + engagement loop
+- **`/feed` reads are broken for many accounts** — `GET /{page}/feed` returns `error 10 requires pages_read_engagement` even with the permission granted. Use `GET /{page}/posts` instead. (POSTing to `/feed` is fine; only *reading* `/feed` is broken.)
+- **The new Pages experience requires a PAGE token** for `/posts`, `/scheduled_posts`, etc. A system-user or user token fails with `error 190 subcode 2069032`. Derive the page token from `/me/accounts` (page tokens don't expire for pages you administer) and use it for all page-scoped calls.
+- **Missing `read_insights` masks as `error 100 "The value must be a valid insights metric"`** for any metric — it's a permission problem, not a metric problem.
+- **Reading comment text needs `pages_read_user_content`** on top of `pages_read_engagement`.
+- **System users often cannot reply to existing comments** (`error 100 subcode 33 "does not support this operation"`) even with `pages_manage_engagement` — while creating a new comment on a post works. Make the reply loop resilient (try/catch per comment, mark seen, log and continue) so one failure doesn't halt the poll.
+- **Scheduling unit bug**: `scheduled_publish_time` is unix *seconds*. If you build times as `Date.now() + step` where `step` is in seconds, posts get scheduled ~40s ahead and flood the page every minute. Convert: `Math.floor(Date.now() / 1000) + stepSeconds`.
+- **Stale dry-run posts block live scheduling**: after running in dry-run, the local store holds fake `post_1`-style scheduled entries that never exist on Facebook. `topUp()` counts them as filled slots and never schedules real posts. On each live tick, reconcile against `GET /{page}/scheduled_posts` and drop local scheduled entries that aren't real.
+- **Overlapping scheduler ticks double-schedule**: if the tick (content generation + API calls) takes longer than the cron interval, two ticks run concurrently and both see "missing slots" → posts get scheduled a minute apart. Guard the tick with a `running` flag (async mutex), and count open slots from the live `/scheduled_posts` list rather than the local store.
+- **Always ship a `DRY_RUN` mode** so the whole pipeline runs and is testable before any credentials exist.
 
-- Draft posts with a local model (ollama OpenAI-compatible endpoint: `POST {OLLAMA_URL}/v1/chat/completions` — note the `/v1` — with `{"model":"qwen2.5:1.5b","messages":[...],"stream":false}`; read the draft from `choices[0].message.content`). Health-check ollama with `GET {OLLAMA_URL}/api/tags`.
-- Posting cadence: a minute-level cron tick that (a) fires due jobs, then (b) tops up the next 24h to `POSTS_PER_DAY` slots.
-- Engagement: poll `GET PAGE_ID/feed?fields=comments.limit(10){id,message,from,created_time}`, reply once per unseen comment, track seen ids in a JSON store.
-- **Always support a DRY_RUN mode** (`DRY_RUN=true`) so the whole pipeline runs and is testable before real credentials exist. Verify top-up idempotency: running the tick twice must schedule `0` additional posts (persist `scheduled`/`fired` flags per post, not just a published list).
+## Minimal agent loop (Node.js)
 
-### 4. Monetization focus
+```javascript
+const cron = require("node-cron");
+const { graph, pageTokenFor } = require("./graph");   // as above
 
-Track the classic in-stream-ads gates and drive them:
-- 10,000 followers
-- 30,000 × 1-minute video views in 60 days
+async function topUp(pageId, postsPerDay) {
+  const now = Date.now();
+  const horizon = now + 24 * 3600 * 1000;
+  const real = await graph(`${pageId}/scheduled_posts`, { fields: "id,created_time" }, "GET", await pageTokenFor(pageId));
+  const slots = real.data.filter((p) => new Date(p.created_time).getTime() > now && new Date(p.created_time).getTime() <= horizon);
+  const missing = Math.max(0, postsPerDay - slots.length);
+  for (let i = 0; i < missing; i++) {
+    const step = (24 * 3600 * 1000) / postsPerDay;
+    const when = Math.floor((now + step * (i + 1)) / 1000);
+    await graph(`${pageId}/feed`, { message: `Draft #${i}`, published: false, scheduled_publish_time: when }, "POST", await pageTokenFor(pageId));
+  }
+}
 
-Report progress % toward each gate, deltas vs last snapshot, and advice (3s hooks, captions, save/share CTAs, video cadence). Remind users that Meta's actual eligibility (e.g. "Ads on Reels") has its own rolling rules — verify in the page's Professional Dashboard.
+cron.schedule("* * * * *", () => topUp("PAGE_ID", 3).catch((e) => console.error(e.message)));
+```
+
+## Deploy as an always-on service
+
+Systemd user service survives reboots and auto-restarts on crash:
+
+```ini
+[Unit]
+Description=Facebook Page Agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/USER/facebook-agent
+ExecStart=/usr/bin/node src/index.js
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target
+```
+
+```bash
+mkdir -p ~/.config/systemd/user
+# write the unit to ~/.config/systemd/user/facebook-agent.service
+systemctl --user daemon-reload
+systemctl --user enable --now facebook-agent
+loginctl enable-linger USER   # keep running after logout (sudo if needed)
+journalctl --user -u facebook-agent -f   # watch logs
+```
 
 ## Output format
 
 The agent should report:
-- Page status: name, id, live/dry-run mode
-- Analytics: followers, impressions, engaged users, video views + deltas
-- Monetization: % toward each gate + concrete next actions
-- Scheduled jobs: id, status, time, preview
-
-Errors: `Graph API <code>: <message>` plus the fix (refresh token / grant permission).
+- Page: name, id, live/dry-run mode
+- Scheduled jobs: id, time, preview
+- Followers and monetization-gate progress (% toward 10k followers, 30k 1-min video views / 60d)
+- Errors as `Graph API <code>: <message>` plus the fix (permission / token / endpoint)
 
 ## Rate limits / Best practices
 
 - Back off on HTTP 429 / 5xx (retry up to 3x with exponential delay).
 - Never reply to the same comment twice — persist seen ids.
-- Keep a DRY_RUN flag and never hardcode tokens (`.env`, git-ignored).
-- Graph API tokens are credentials — never commit them, redact in logs.
+- Keep tokens in `.env` (git-ignored); never commit or log them.
+- Verify `GET /debug_token` scopes before blaming the agent code.
+- Meta's actual monetization rules change — verify eligibility in the page's Professional Dashboard before promising monetization.
 
 ## Agent prompt
 
 ```text
 You have Facebook Page Manager capability. When a user asks to build or run a Facebook page agent:
-1. Confirm whether they already have a Facebook Developer app + user token. If not, walk them through the setup flow above.
-2. Build the agent as a standalone Node service: Graph client, content generator (local ollama first), scheduler, engagement poller, analytics, monetization tracker.
-3. Ship with DRY_RUN=true so it runs before credentials exist; only flip to live after `doctor` checks pass.
-4. Track monetization gates and always verify eligibility rules in Meta's dashboard rather than promising monetization.
+1. Check credentials: do they have a developer app + token? Recommend a System User token (never expires) with all 6 permissions. Verify via /debug_token.
+2. Build the agent as a standalone Node service: Graph client (page token via /me/accounts), content generator (local ollama first), scheduler, engagement poller, analytics, monetization tracker. Always DRY_RUN first.
+3. On going live: read posts via /posts not /feed, reconcile topUp against /scheduled_posts, convert scheduled_publish_time to unix seconds, make comment replies per-comment resilient.
+4. Deploy as a systemd user service with restart=always and enable-linger so it runs unattended.
 ```
 
 ## Troubleshooting
 
-**`Graph API error 190` / "token expired"**
-- Re-run the `fb_exchange_token` step to refresh the long-lived user token.
+**`error 10 ... requires pages_read_engagement` on GET /{page}/feed**
+- Use `GET /{page}/posts` instead. If it persists there, the token's page token may be missing `pages_read_engagement` — recheck `/debug_token`.
 
-**`Graph API error 200` permission**
-- The token lacks a permission or the app needs review. Regenerate the token and re-approve permissions.
+**`error 190 subcode 2069032 "Page access token is required"`**
+- New Pages experience: derive a page token via `/me/accounts` and use it for page-scoped calls.
 
-**`403` on comment replies**
-- Missing `pages_manage_engagement`, or replying on a post you don't manage.
+**`error 100 "The value must be a valid insights metric"`**
+- Missing `read_insights`. Regenerate the system user token with `read_insights` selected.
 
-**`429` rate limit**
-- Add exponential backoff and reduce poll frequency (Graph API ~600 calls/600s per token).
+**`error 100 subcode 33` on comment replies**
+- Known system-user limitation. Creating comments works; replying to other users' comments may be blocked. Keep the reply loop resilient and try again after assigning the system user a full-control page role.
+
+**Posts scheduling ~40 seconds apart / flooding the page**
+- Unit bug: `scheduled_publish_time` is unix seconds; `Date.now()` is milliseconds. Convert before sending.
+
+**Agent runs but never schedules real posts**
+- Stale local "scheduled" entries from dry-run are blocking topUp. Reconcile local store against `GET /{page}/scheduled_posts` and drop fake entries.
+
+**`error 190` token expired (user tokens only)**
+- System user tokens don't expire; switch to one. Otherwise re-run the `fb_exchange_token` step.
 
 ## See also
 
-- [../using-telegram-bot/SKILL.md](../using-telegram-bot/SKILL.md) — Telegraf patterns used for the control bot
+- [../using-telegram-bot/SKILL.md](../using-telegram-bot/SKILL.md) — Telegraf patterns for the optional control bot
+- [../humanizer/SKILL.md](../humanizer/SKILL.md) — tone adjustments for AI-drafted page content
